@@ -1,0 +1,8 @@
+.right {
+	float: right;
+}
+
+input.empty {
+	font-style: italic;
+	color: #888;
+}
