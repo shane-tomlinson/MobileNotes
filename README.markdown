@@ -30,7 +30,7 @@ http://creativecommons.org/licenses/by-sa/3.0/
 1. Download the latest code from [GitHub](http://www.github.com/stomlinson/MobileNotes).
 2. Open up index.html
 
-Copyright Shane Tomlinson 2010
+Copyright Shane Tomlinson 2011
 
 
 
