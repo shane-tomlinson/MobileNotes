@@ -2439,9 +2439,18 @@ AFrame.ListPluginBindToCollection = ( function() {
  *         },
  *         add: function( item, options ) {
  *              // functionality here to do the add
- *              
+ *
+ *              // Method 1: this does not override the initial item
  *              if( options.onComplete ) {
  *                  options.onComplete();
+ *              }
+ *
+ *              // Method 2: this overrides the initial item to create a model which is inserted
+ *              // into the collection.  Note, getModel is an imaginary function used only for
+ *              // demo purposes.
+ *              if( options.onComplete ) {
+ *                  var model = getModel( item );
+ *                  options.onComplete( model );
  *              }
  *         },
  *         del: function( item, options ) {
@@ -2607,7 +2616,10 @@ AFrame.CollectionPluginPersistence = ( function() {
             var event = plugged.triggerEvent( getEvent( 'onBeforeAdd', item, options ) );
             
             if( plugged.shouldDoAction( options, event ) ) {
-                options.onComplete = function() {
+                options.onComplete = function( overriddenItem ) {
+                    // For the insert item, use the item given by the db access layer, if they pass one back.  If 
+                    //  no override is given, use the original item.
+                    item = overriddenItem || item;
                     var cid = plugged.insert( item, options.insertAt );
                     options.cid = cid;
                     options.onComplete = callback;
@@ -2944,32 +2956,6 @@ AFrame.CollectionPluginPersistence = ( function() {
  */
 AFrame.Form = ( function() {
     "use strict";
-    
-    /**
-    * The factory used to create fields.
-    *
-    *     // example of overloaded formFieldFactory
-    *     formFieldFactory: function( element ) {
-    *       return AFrame.construct( {
-    *           type: AFrame.SpecializedField,
-    *           config: {
-    *               target: element
-    *           }
-    *       } );
-    *     };
-    *
-    * @method formFieldFactory
-    * @param {Element} element - element where to create field
-    * @return {AFrame.Field} field for element.
-    */
-    var formFieldFactory = function( element ) {
-       return AFrame.construct( {
-            type: AFrame.Field,
-            config: {
-                target: element
-            }
-        } );
-    };
 
     var Form = function() {
         Form.sc.constructor.apply( this, arguments );
@@ -3101,7 +3087,7 @@ AFrame.Form = ( function() {
          * @method clear
          */
         clear: function() {
-            this.fieldAction( 'clear' );
+            fieldAction.call( this, 'clear' );
         },
 
         /**
@@ -3113,7 +3099,7 @@ AFrame.Form = ( function() {
          * @method reset
          */
         reset: function() {
-            this.fieldAction( 'reset' );
+            fieldAction.call( this, 'reset' );
         },
 
         /**
@@ -3128,23 +3114,62 @@ AFrame.Form = ( function() {
         save: function() {
             var valid = this.checkValidity();
             if( valid ) {
-                this.fieldAction( 'save' );
+                fieldAction.call( this, 'save' );
             }
             
             return valid;
         },
 
-        fieldAction: function( action ) {
-            this.forEach( function( formField, index ) {
-                formField[ action ]();
-            } );
-        },
         
+        /**
+        * Iterate through each form field
+        * @method forEach
+        * @param {function} callback - the callback to call.
+        * @param {object} context (optional) - the context to call the callback in
+        */
         forEach: function( callback, context ) {
             this.formFields && this.formFields.forEach( callback, context );
         }
     } );
     
+    /**
+    * Do an action on all fields.
+    * @method fieldAction
+    * @private
+    */
+    function fieldAction( action ) {
+        this.forEach( function( formField, index ) {
+            formField[ action ]();
+        } );
+    }
+    
+    
+    /**
+    * The factory used to create fields.
+    *
+    *     // example of overloaded formFieldFactory
+    *     formFieldFactory: function( element ) {
+    *       return AFrame.construct( {
+    *           type: AFrame.SpecializedField,
+    *           config: {
+    *               target: element
+    *           }
+    *       } );
+    *     };
+    *
+    * @method formFieldFactory
+    * @param {Element} element - element where to create field
+    * @return {AFrame.Field} field for element.
+    */
+    function formFieldFactory( element ) {
+       return AFrame.construct( {
+            type: AFrame.Field,
+            config: {
+                target: element
+            }
+        } );
+    }
+
     return Form;
 }() );
 /**
@@ -4691,47 +4716,59 @@ AFrame.DataForm = ( function() {
 	    },
 
 	    checkValidity: function() {
-		    var valid = DataForm.sc.checkValidity.call( this );
-		    if( valid && this.dataContainer.checkValidity ) {
-    		    // only validate vs the dataContainer if the dataContainer has validation.
-		        valid = this.validateFormFieldsWithModels();
-		    }
+		    var valid = DataForm.sc.checkValidity.call( this )
+                && this.validateFormFieldsWithModel( this.dataContainer );
 		
 		    return valid;
-	    },
-
-	    validateFormFieldsWithModels: function() {
-		    var valid = true;
-		    var formFields = this.getFormFields();
-		    formFields.forEach( function( formField, index ) {
-			    var fieldName = fieldGetName( formField );
-			    var validityState = this.dataContainer.checkValidity( fieldName, formField.get() );
-			
-			    if( validityState !== true ) {
-				    valid = false;
-				    fieldUpdateValidityState( formField, validityState );
-			    }
-		    }, this );
-		    	
-		    return valid;	
 	    },
 	
 	    save: function() {
 		    var valid = DataForm.sc.save.apply( this, arguments );
 		
 		    if( valid ) {
-			    var formFields = this.getFormFields();
-			    formFields.forEach( function( formField, index ) {
+                this.forEach( function( formField, index ) {
 				    var fieldName = fieldGetName( formField );
 				    this.dataContainer.set( fieldName, formField.get() );
 			    }, this );
 		    }
 		
 		    return valid;
-	    }
+	    },
+        
+        /**
+        * Validate the form against a model.
+        * @method validateFormFieldsWithModel
+        * @param {AFrame.Model} model - the model to validate against
+        * @return {boolean} - true if form validates, false otw.
+        */
+        validateFormFieldsWithModel: function( model ) {
+            var valid = true;
+
+            // only validate vs the dataContainer if the dataContainer has validation.
+            if( model.checkValidity ) {
+                valid = validateFormFieldsWithModel.call( this, model );
+            }
+
+            return valid;
+        }
     } );
 
     // Some helper functions that should probably be on the Field itself.
+    function validateFormFieldsWithModel( model ) {
+        var valid = true;
+        this.forEach( function( formField, index ) {
+            var fieldName = fieldGetName( formField );
+            var validityState = model.checkValidity( fieldName, formField.get() );
+        
+            if( validityState !== true ) {
+                valid = false;
+                fieldUpdateValidityState( formField, validityState );
+            }
+        }, this );
+            
+        return valid;	
+    }
+
     function fieldUpdateValidityState( formField, validityState ) {
         for( var key in validityState ) {
             if( validityState.hasOwnProperty( key ) ) {
@@ -4754,7 +4791,7 @@ AFrame.DataForm = ( function() {
         this.set( data.value );
     }
 
-
+    
     return DataForm;
 } )();
 /**

@@ -186,6 +186,7 @@ MobileNotes.NoteDBAccess = ( function() {
                 }.bind( this ) );
             } catch ( e ) {
                 console.log( 'error in del: ' + e.toString() );
+                callback( note );
             }
         }
     } );

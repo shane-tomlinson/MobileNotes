@@ -1,5 +1,5 @@
 MobileNotes.NoteSchemaConfig = {
-	id: { type: 'string' },
+	id: { type: 'text' },
 	title: { type: 'text', validate: {
         required: true,
         minlength: 1,

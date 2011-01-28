@@ -115,15 +115,19 @@ $( function() {
 	} );
 	
     // when the note edit form says a delete happens, delete from the store.
-	editNoteForm.bindEvent( 'onDelete', noteStore.del, noteStore );
+	editNoteForm.bindEvent( 'onDelete', function( event, cid ) {
+        noteStore.del( cid );
+	} );
 	
     // when the note edit form says to save, save to the store.
-	editNoteForm.bindEvent( 'onSave', noteStore.save, noteStore );
+	editNoteForm.bindEvent( 'onSave', function( event, cid ) {
+        noteStore.save( cid );
+	} );
 	
     // we are keeping track of whether the current note is a new note or not.  If it is,
     //  and the user hits cancel, delete the note from the store, it was only temporary.
 	var newNote;
-	editNoteForm.bindEvent( 'onCancel', function( cid ) {
+	editNoteForm.bindEvent( 'onCancel', function( event, cid ) {
 		if( newNote ) {
 			noteStore.del( cid );			
 		}

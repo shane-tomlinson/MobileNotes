@@ -2,7 +2,7 @@
 	float: right;
 }
 
-input.empty {
+input.empty, textarea.empty {
 	font-style: italic;
 	color: #888;
 }

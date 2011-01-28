@@ -34,13 +34,11 @@ MobileNotes.EditNoteDisplay = ( function() {
         },
         
         bindEvents: function() {
-            this.bindDOMEvent( '.btnSaveNote', 'click', this.onSave, this );
-            this.bindDOMEvent( '.btnCancelNote', 'click', this.onCancel, this );
-            this.bindDOMEvent( '.btnDeleteNote', 'click', this.onDelete, this );
-            this.bindDOMEvent( this.getTarget(), 'pageshow', this.onPageShow, this );
+            this.bindClick( '.btnSaveNote', this.onSave );
+            this.bindClick( '.btnCancelNote', this.onCancel );
+            this.bindDOMEvent( this.getTarget(), 'pageshow', this.onPageShow );
             
             this.deleteConfirmDisplay.bindEvent( 'onDelete', this.onDeleteConfirm, this );
-            this.deleteConfirmDisplay.bindEvent( 'onCancel', this.onDeleteCancel, this );
         },
         
         setDataSource: function( dataSource ) {
@@ -53,19 +51,24 @@ MobileNotes.EditNoteDisplay = ( function() {
             this.extraInfoDisplay.setDataSource( dataSource );
         },
         
+        checkValidity: function() {
+            // check the validity vs the original model.  See if things are kosher before
+            //  we save.
+		    var valid = Display.sc.checkValidity.call( this )
+                && this.validateFormFieldsWithModel( this.dataSource );
+		
+		    return valid;
+        },
+        
         save: function() {
             var valid = Display.sc.save.apply( this, arguments );
             
             if( valid ) {
                 // Update the original data source with the updated data from the dataContainer.
-                
                 this.dataSource.forEach( function( val, key ) {
                     // we do it this way so that we don't pollute the original dataSource with extra data
                     var updatedValue = this.dataContainer.get( key );
-                    var retval = this.dataSource.set( key, updatedValue );
-                    if( retval instanceof AFrame.FieldValidityState ) {
-                        valid = false;
-                    }
+                    this.dataSource.set( key, updatedValue );
                 }, this );
             }
             
@@ -83,18 +86,10 @@ MobileNotes.EditNoteDisplay = ( function() {
             this.triggerEvent( 'onCancel', this.dataSource.get( 'cid' ) );
         },
         
-        onDelete: function( event ) {
-            this.deleteConfirmDisplay.show();
-        },
-        
         onDeleteConfirm: function() {
             this.triggerEvent( 'onDelete', this.dataSource.get( 'cid' ) );
-            this.deleteConfirmDisplay.hide();
         },
         
-        onDeleteCancel: function() {
-            this.deleteConfirmDisplay.hide();
-        },
 
         show: function( options ) {
             options = options || {};
@@ -102,21 +97,20 @@ MobileNotes.EditNoteDisplay = ( function() {
             
             this.focusOnShow = !!options.focus;
             
-            if( options.disableDelete ) {
-                $( '.btnDeleteNote', target ).hide();
-            }
-            else {
-                $( '.btnDeleteNote', target ).show();
-            }
+            var func = options.disableDelete ? 'hide' : 'show';
+            $( '.btnDeleteNote', target )[ func ]();
         },
+        
         
         onPageShow: function() {
             if( this.focusOnShow ) {
                 setTimeout( function() {
                     this.getTarget().find( 'input' ).focus().select();
-                }.bind( this ), 250 );
+                }.bind( this ), 100 );
             }
         }
     } );
+    
+    
     return Display;
 }() );
