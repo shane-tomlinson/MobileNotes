@@ -49,7 +49,7 @@
 			<footer data-role="footer" data-position="fixed">
 				<div data-role="navbar">
 					<ul>
-						<li><a href="#appTools" data-icon="gear">Tools</a></li>
+						<li><a href="#appAbout" data-icon="gear">About</a></li>
 						<li><a href="#editNoteForm" id="btnAddNote" data-icon="plus">Add Note</a></li>
 					</ul>
 				</div>
@@ -152,15 +152,32 @@
 		</div>
 
 		
-		<div id="appTools" data-role="page" data-theme="b">
-			<header data-role="header">
-				<h1 type="text">Tools</h1>
+		<div id="appAbout" data-role="page" data-theme="b">
+			<header data-role="header" data-nobackbtn="true">
+				<h1 type="text">About</h1>
 			</header>
 			
-			<div data-role="controlgroup">
-				<a href="#accountInfo" data-role="button">Account Info</a>
-				<a href="#" data-role="button">Sync with Server</a>
-				<a href="#" data-role="button">Clear Note Database</a>
+			<div data-role="content">
+                <p>
+                    This note taking application was created by <a href="http://www.shanetomlinson.com">Shane Tomlinson</a> as
+                    a demo for <a href="http://www.aframejs.com">AFrameJS</a>.  In browsers that support HTML5's WebSQL,
+                    any notes created are stored in the browser's persistent storage, no data is ever sent to the
+                    server.  Right now, Safari and Chrome support this on the desktop, as well as the iPhone and Android
+                    default browsers.  No data is ever sent to the server.
+                </p>
+                <p>
+                    <a href="http://www.aframejs.com">AFrameJS</a> is a Javascript MVC library aimed at making the development
+                    of apps like this far easier and cleaner than in the past.  AFrameJS gives the developer clean separation
+                    of models, views, and controllers as has been done for years in more traditional languages.
+                </p>
+                <p>
+                    This demo makes use of <a href="http://www.jquery.com">jQuery 1.4.4</a> as well as <a href="http://www.jquerymobile.com">jQuery Mobile 1.0 Alpha 2</a>.
+                </p>
+                <p>
+                    Source code for this demo is on <a href="https://github.com/stomlinson/MobileNotes">GitHub</a>.
+                    Code for AFrameJS can also be found at <a href="https://github.com/stomlinson/AFrame-JS">GitHub</a>.
+                </p>
+				<a href="#main" data-role="button">Back</a>
 			</div>
 			
 		
@@ -194,7 +211,6 @@
 
 	</div>
 	
-</body>
 
 <script type="text/html" id="templateNote">
 	<li class="note">
@@ -204,5 +220,21 @@
 		</a>
 	</li>
 </script>
+<script type="text/javascript">
+
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-20062047-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+    if(window.location.protocol != "file:") {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    }
+})();
+
+</script>
+</body>
 
 </html>
