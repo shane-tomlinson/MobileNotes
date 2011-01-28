@@ -31,14 +31,21 @@ MobileNotes.NoteDBAccess = ( function() {
         },
         
         load: function( options ) {
-            this.localDB.load( {}, function( notes ) {
+            this.localDB.load( {}, onComplete.bind( this ) );
+            
+            function onComplete( notes ) {
+                var noteModels = createNoteModels.call( this, notes );
+                options.onComplete && options.onComplete( noteModels );
+            };
+            
+            function createNoteModels( notes ) {
                 var noteModels = [];
                 notes.forEach( function( note, index ) {
                     var model = noteModelFactory.call( this, note );
                     noteModels.push( model );
-                }.bind( this ) );
-                options.onComplete && options.onComplete( noteModels );
-            } );
+                }, this );
+                return noteModels;
+            }
         },
         
         add: function( note, options ) {
