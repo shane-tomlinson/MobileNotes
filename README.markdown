@@ -14,16 +14,16 @@ http://creativecommons.org/licenses/by-sa/3.0/
 =====================
 ##Directory Structure##
 
-./index.html                             <-- Has the app HTML and templates
-./images/                                <-- Used for jQuery mobile images
-./scripts/                               <-- Javascript directory
-          ext/                           <-- External scripts
-          fields/                        <-- Field displays
-          screens/                       <-- Screen displays
-          mobilenotes.js                 <-- The main startup script
-          noteDBAccess.js                <-- DB adapter to create models and save to WebSQL databases
-          noteSchema.js                  <-- The schema config for a note
-./stylesheets/                           <-- Where the stylesheets are
+    ./index.html             <-- Has the app HTML and templates
+    ./images/                <-- Used for jQuery mobile images
+    ./scripts/               <-- Javascript directory
+          ext/               <-- External scripts
+          fields/            <-- Field displays
+          screens/           <-- Screen displays
+          mobilenotes.js     <-- The main startup script
+          noteDBAccess.js    <-- DB adapter to create models and save to WebSQL databases
+          noteSchema.js      <-- The schema config for a note
+    ./stylesheets/           <-- Where the stylesheets are
 
 
 ##To Run##
