@@ -64,7 +64,7 @@ MobileNotes.NoteDBAccess = ( function() {
         },
 
         del: function( data, options ) {
-            this.localDB.del( data, options.onComplete );
+            this.localDB.del( data.data, options.onComplete );
         }
 
     } );
