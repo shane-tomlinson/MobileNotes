@@ -9,20 +9,23 @@ $( function() {
     // We are first creating a DB Adapter - the DB Adapter will save notes to a local WebSQL database
     //  if the browser supports it.
     var noteDBAdapter = AFrame.construct( { 
-    	type: MobileNotes.NoteDBAccess
+    	type: MobileNotes.NoteDBAccess,
+        config: {
+            schema: MobileNotes.NoteSchemaConfig
+        }
     } );
 	
-    // We are then creating a note store.
+    // We are then creating a note store that is tied to the persistence layer.
 	var noteStore = AFrame.construct( {
 		type: AFrame.CollectionArray,
 		plugins: [
 			{
 				type: AFrame.CollectionPluginPersistence,
 				config: {
-					loadCallback: noteDBAdapter.loadCallback,
-					addCallback: noteDBAdapter.addCallback,
-					saveCallback: noteDBAdapter.saveCallback,
-					deleteCallback: noteDBAdapter.delCallback
+					loadCallback: noteDBAdapter.load.bind( noteDBAdapter ),
+					addCallback: noteDBAdapter.add.bind( noteDBAdapter ),
+					saveCallback: noteDBAdapter.save.bind( noteDBAdapter ),
+					deleteCallback: noteDBAdapter.del.bind( noteDBAdapter ),
 					
 				}
 			}
@@ -52,13 +55,17 @@ $( function() {
 		return field;
 	};
 	
+    // set the default form field factory to use our own homegrown version that 
+    // creates date and time fields.
+    AFrame.Form.setDefaultFieldFactory( formFieldFactory );
+    
     // create the note list that is bound to the noteStore.  For every note, create a form row,
     // overriding the default form factory to use our own formFieldFactory.
 	var noteList = AFrame.construct( {
 		type: AFrame.List,
 		config: {
 			target: '#notelist',
-			createListElementCallback: function( index, data ) {
+			listElementFactory: function( index, data ) {
 				return $( $( '#templateNote' ).html() );
 			}
 		},
@@ -72,23 +79,7 @@ $( function() {
 			},
 			{
                 // for every note, create a form that is bound to the fields specified in the template.
-                // we are overriding the default formFactory to create DataForms that use our custom
-                // fieldFactory that we have specified above.
-				type: AFrame.ListPluginFormRow,
-				config: {
-					formFactory: function( rowElement, data ) {
-						var form = AFrame.construct( {
-							type: AFrame.DataForm,
-							config: {
-								dataSource: data.data,
-								target: rowElement,
-								formFieldFactory: formFieldFactory
-							}
-						} );
-						
-						return form;
-					}
-				}
+				type: AFrame.ListPluginFormRow
 			}
 		]
 	} );
@@ -147,6 +138,7 @@ $( function() {
 	};
 	
 	var loading = true;
+    // When a new note is inserted, bind some events to it to put it into edit mode.
 	noteList.bindEvent( 'onInsert', function( data ) {
 		$( 'a', data.rowElement ).click( function( event ) {
 			newNote = false;

@@ -1,7 +1,13 @@
 MobileNotes.NoteSchemaConfig = {
-	id: { type: 'integer' },
-	title: { type: 'text' },
-	contents: { type: 'text' },
+	id: { type: 'string' },
+	title: { type: 'text', validate: {
+        required: true,
+        minlength: 1,
+        maxlength: 50
+	} },
+	contents: { type: 'text', validate: {
+        required: true
+	} },
 	date: { type: 'iso8601' },
 	edit_date: { type: 'iso8601' }
 };

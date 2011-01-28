@@ -58,10 +58,14 @@ MobileNotes.EditNoteDisplay = ( function() {
             
             if( valid ) {
                 // Update the original data source with the updated data from the dataContainer.
+                
                 this.dataSource.forEach( function( val, key ) {
                     // we do it this way so that we don't pollute the original dataSource with extra data
                     var updatedValue = this.dataContainer.get( key );
-                    this.dataSource.set( key, updatedValue );
+                    var retval = this.dataSource.set( key, updatedValue );
+                    if( retval instanceof AFrame.FieldValidityState ) {
+                        valid = false;
+                    }
                 }, this );
             }
             
