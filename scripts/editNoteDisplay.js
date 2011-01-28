@@ -78,16 +78,16 @@ MobileNotes.EditNoteDisplay = ( function() {
         onSave: function( event ) {
             var valid = this.save();
             if( valid ) {
-                this.triggerEvent( 'onSave', this.dataSource.get( 'cid' ) );
+                this.triggerEvent( 'onSave', this.dataSource.getCID() );
             }
         },
         
         onCancel: function( event ) {
-            this.triggerEvent( 'onCancel', this.dataSource.get( 'cid' ) );
+            this.triggerEvent( 'onCancel', this.dataSource.getCID() );
         },
         
         onDeleteConfirm: function() {
-            this.triggerEvent( 'onDelete', this.dataSource.get( 'cid' ) );
+            this.triggerEvent( 'onDelete', this.dataSource.getCID() );
         },
         
 

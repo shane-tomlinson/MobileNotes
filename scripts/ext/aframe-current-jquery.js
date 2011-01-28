@@ -3218,7 +3218,7 @@ AFrame.Field = ( function() {
 
             Field.sc.init.apply( this, arguments );
 
-            this.resetVal = this.getDisplayed();
+            this.save();
         },
         
         createValidator: function() {
@@ -3263,7 +3263,7 @@ AFrame.Field = ( function() {
         */
         display: function( val ) {
             var target = this.getTarget();
-            AFrame.DOM.setInner( target, val );
+            AFrame.DOM.setInner( target, val || '' );
         },
         
         /**
@@ -3326,6 +3326,10 @@ AFrame.Field = ( function() {
          */
         save: function() {
             var displayed = this.getDisplayed();
+            
+            if( !displayed.length ) {
+                displayed = void( 0 );
+            }
             
             this.resetVal = displayed;
         },
@@ -3503,7 +3507,6 @@ AFrame.FieldPluginValidation = (function() {
 		    } else {
                 var criteria = this.getCriteria();
                 var val = field.get();
-                val = val.length ? val : undefined;
                 
                 AFrame.DataValidation.validate( {
                     data: val,
@@ -4716,8 +4719,7 @@ AFrame.DataForm = ( function() {
 	    },
 
 	    checkValidity: function() {
-		    var valid = DataForm.sc.checkValidity.call( this )
-                && this.validateFormFieldsWithModel( this.dataContainer );
+		    var valid = DataForm.sc.checkValidity.call( this ) && this.validateFormFieldsWithModel( this.dataContainer );
 		
 		    return valid;
 	    },
@@ -4737,6 +4739,7 @@ AFrame.DataForm = ( function() {
         
         /**
         * Validate the form against a model.
+        *
         * @method validateFormFieldsWithModel
         * @param {AFrame.Model} model - the model to validate against
         * @return {boolean} - true if form validates, false otw.
@@ -4986,6 +4989,12 @@ AFrame.DataValidation = ( function() {
     Validation.setValidator( 'number', 'step', numberStepValidation );
     Validation.setValidator( 'integer', 'step', numberStepValidation );
         
+    Validation.setValidator( 'text', 'required', function( dataToValidate, fieldValidityState ) {
+        if( !dataToValidate ) {
+            fieldValidityState.setError( 'valueMissing' );
+        }
+    } );
+
     Validation.setValidator( 'text', 'maxlength', function( dataToValidate, fieldValidityState, maxLength ) {
         if( defined( dataToValidate ) && dataToValidate.length && dataToValidate.length > maxLength ) {
             fieldValidityState.setError( 'tooLong' );
