@@ -6,3 +6,16 @@ input.empty, textarea.empty {
 	font-style: italic;
 	color: #888;
 }
+
+.min-width-480px input.ui-input-text, 
+.min-width-480px textarea.ui-input-text, 
+.min-width-480px textarea.ui-input-search {
+    display: block;
+    width: 98%;
+    margin: 0 auto;
+}
+
+.min-width-480px input[data-field=title] {
+    margin-top: .5em;
+    margin-bottom: .5em;
+}
