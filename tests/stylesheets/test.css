@@ -1,0 +1,47 @@
+#chart {
+    position: relative;
+    width: 1000px;
+    height: 300px;
+}
+
+#window {
+    position: absolute;
+    top: 0;
+    height: 300px;
+    background: rgba( 0, 0, 0, .3 );
+    width: 35px;
+    left: 300px;
+}
+
+.ui-resizable-e, .ui-resizable-w {
+    position: absolute;
+    height: 100%;
+    width: 6px;
+    background: #ccc;
+}
+
+.ui-resizable-e {
+    right: -3px;
+}
+
+.ui-resizable-w {
+    left: -3px;
+}
+
+.mouseMovementPlaceholder {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #567abc;
+}
+
+#draggable {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #123456;
+}
+
+.clear {
+    clear: both;
+}
