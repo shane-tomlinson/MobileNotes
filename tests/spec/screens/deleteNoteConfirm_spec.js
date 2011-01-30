@@ -1,24 +1,24 @@
 describe( "DeleteNoteConfirm spec", function() {
 
-    var timeField;
+    var screen;
     var events = {};
     var genericHandler = function( event ) {
         events[ event.type ] = event;
     }
     
     it( 'is creatable', function() {
-        timeField = AFrame.construct( {
+        screen = AFrame.construct( {
             type: MobileNotes.DeleteNoteConfirm,
             config: {
                 target: '#deleteNoteConfirm'
             }
         } );
         
-        expect( timeField instanceof MobileNotes.DeleteNoteConfirm ).toBe( true );
+        expect( screen instanceof MobileNotes.DeleteNoteConfirm ).toBe( true );
     } );
     
     it( 'should trigger onCancel when cancel hit', function() {
-        timeField.bindEvent( 'onCancel', genericHandler );
+        screen.bindEvent( 'onCancel', genericHandler );
         
         $( '.btnCancel' ).trigger( 'click' );
         
@@ -26,7 +26,7 @@ describe( "DeleteNoteConfirm spec", function() {
     } );
 
     it( 'should trigger onDelete when delete hit', function() {
-        timeField.bindEvent( 'onDelete', genericHandler );
+        screen.bindEvent( 'onDelete', genericHandler );
         
         $( '.btnDelete' ).trigger( 'click' );
         

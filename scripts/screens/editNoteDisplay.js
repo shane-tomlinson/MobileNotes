@@ -15,13 +15,6 @@ MobileNotes.EditNoteDisplay = ( function() {
             config.dataSource = AFrame.DataContainer( {} );
             
             /**
-            * The delete confirm display
-            * @config deleteConfirmDisplay
-            * @type {AFrame.Display}
-            */
-            this.deleteConfirmDisplay = config.deleteConfirmDisplay;
-
-            /**
             * the extra info display
             * @config extraInfoDisplay
             * @type {AFrame.DataForm}
@@ -29,16 +22,14 @@ MobileNotes.EditNoteDisplay = ( function() {
             this.extraInfoDisplay = config.extraInfoDisplay;
             
             Display.sc.init.call( this, config );
-            
-            this.bindEvents();
         },
         
         bindEvents: function() {
-            this.bindClick( '.btnSaveNote', this.onSave );
-            this.bindClick( '.btnCancelNote', this.onCancel );
-            this.bindDOMEvent( this.getTarget(), 'pageshow', this.onPageShow );
+            this.bindClick( '.btnSaveNote', onSave );
+            this.bindClick( '.btnCancelNote', onCancel );
+            this.bindDOMEvent( this.getTarget(), 'pageshow', onPageShow );
             
-            this.deleteConfirmDisplay.bindEvent( 'onDelete', this.onDeleteConfirm, this );
+            Display.sc.bindEvents.call( this );
         },
         
         setDataSource: function( dataSource ) {
@@ -74,22 +65,6 @@ MobileNotes.EditNoteDisplay = ( function() {
             
             return valid;
         },
-        
-        onSave: function( event ) {
-            var valid = this.save();
-            if( valid ) {
-                this.triggerEvent( 'onSave', this.dataSource.getCID() );
-            }
-        },
-        
-        onCancel: function( event ) {
-            this.triggerEvent( 'onCancel', this.dataSource.getCID() );
-        },
-        
-        onDeleteConfirm: function() {
-            this.triggerEvent( 'onDelete', this.dataSource.getCID() );
-        },
-        
 
         show: function( options ) {
             options = options || {};
@@ -99,17 +74,32 @@ MobileNotes.EditNoteDisplay = ( function() {
             
             var func = options.disableDelete ? 'hide' : 'show';
             $( '.btnDeleteNote', target )[ func ]();
-        },
-        
-        
-        onPageShow: function() {
-            if( this.focusOnShow ) {
-                setTimeout( function() {
-                    this.getTarget().find( 'input' ).focus().select();
-                }.bind( this ), 100 );
-            }
         }
     } );
+        
+    function onSave( event ) {
+        var valid = this.save();
+        if( valid ) {
+            this.triggerEvent( 'onSave' );
+        }
+    }
+
+    function onCancel( event ) {
+        this.triggerEvent( 'onCancel' );
+    }
+        
+    
+    function onPageShow() {
+        if( this.focusOnShow ) {
+            setTimeout( function() {
+                this.getTarget().find( 'input' ).focus().select();
+            }.bind( this ), 100 );
+        }
+    }
+        
+    function getCID() {
+        return this.dataSource && this.dataSource.getCID();
+    }
     
     
     return Display;

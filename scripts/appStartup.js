@@ -1,6 +1,8 @@
 
 $( function() {
 
+    var currNoteCID;
+    
     // We are first creating a DB Adapter - the DB Adapter will save notes to a local WebSQL database
     //  if the browser supports it.
     var noteDBAdapter = AFrame.construct( { 
@@ -104,31 +106,33 @@ $( function() {
 		config: {
 			target: '#editNoteForm',
 			formFieldFactory: formFieldFactory,
-			deleteConfirmDisplay: deleteConfirmDisplay,
 			extraInfoDisplay: noteExtraInfoDisplay
 		}
 	} );
 	
-    // when the note edit form says a delete happens, delete from the store.
-	editNoteForm.bindEvent( 'onDelete', function( event, cid ) {
-        noteStore.del( cid );
+    // when the delete form says delete, delete from the store.
+	deleteConfirmDisplay.bindEvent( 'onDelete', function() {
+        noteStore.del( currNoteCID );
 	} );
 	
     // when the note edit form says to save, save to the store.
-	editNoteForm.bindEvent( 'onSave', function( event, cid ) {
-        noteStore.save( cid );
+	editNoteForm.bindEvent( 'onSave', function() {
+        noteStore.save( currNoteCID );
 	} );
 	
     // we are keeping track of whether the current note is a new note or not.  If it is,
     //  and the user hits cancel, delete the note from the store, it was only temporary.
 	var newNote;
-	editNoteForm.bindEvent( 'onCancel', function( event, cid ) {
+	editNoteForm.bindEvent( 'onCancel', function() {
 		if( newNote ) {
-			noteStore.del( cid );			
+			noteStore.del( currNoteCID );			
 		}
 	} );
 	
+    
 	var editNote = function( dataContainer, newNote ) {
+        currNoteCID = dataContainer.cid;
+        
 		editNoteForm.setDataSource( dataContainer );
 		editNoteForm.show( {
 			focus: !!newNote,
