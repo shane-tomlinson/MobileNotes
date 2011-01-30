@@ -16,10 +16,14 @@
         <script type="text/javascript" src="../scripts/fields/dateField.js"></script>
         <script type="text/javascript" src="../scripts/fields/timeField.js"></script>
         
+        <script type="text/javascript" src="../scripts/screens/deleteNoteConfirm.js"></script>
+        
         
         <!-- specs here -->
-        <script type="text/javascript" src="spec/dateField_spec.js"></script>
-        <script type="text/javascript" src="spec/timeField_spec.js"></script>
+        <script type="text/javascript" src="spec/fields/dateField_spec.js"></script>
+        <script type="text/javascript" src="spec/fields/timeField_spec.js"></script>
+        
+        <script type="text/javascript" src="spec/screens/deleteNoteConfirm_spec.js"></script>
 
         <link rel="stylesheet" type="text/css" href="stylesheets/test.css">
 
@@ -29,6 +33,11 @@
     
         <input type="date" id="dateField" />
         <input type="time" id="timeField" data-time-format="12" />
+        
+        <div id="deleteNoteConfirm">
+            <button class="btnDelete">Delete</button>
+            <button class="btnCancel">Cancel</button>
+        </div>
         
         <script type="text/javascript">
           jasmine.getEnv().addReporter(new jasmine.TrivialReporter());

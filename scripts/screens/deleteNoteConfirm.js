@@ -11,15 +11,11 @@ MobileNotes.DeleteNoteConfirm = ( function() {
         Display.sc.constructor.call( this );
     };
     AFrame.extend( Display, AFrame.Display, {
-        init: function( config ) {
-            Display.sc.init.call( this, config );
-            
-            this.bindEvents();
-        },
-        
         bindEvents: function() {
-            this.bindDOMEvent( '.btnDelete', 'click', this.onDelete, this );
-            this.bindDOMEvent( '.btnCancel', 'click', this.onCancel, this );
+            this.bindClick( '.btnDelete', this.onDelete );
+            this.bindClick( '.btnCancel', this.onCancel );
+            
+            Display.sc.bindEvents.call( this );
         },
         
         onDelete: function( event ) {
