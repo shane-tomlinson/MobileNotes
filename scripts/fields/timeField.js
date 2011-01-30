@@ -11,12 +11,6 @@ MobileNotes.TimeField = ( function() {
         Field.sc.constructor.call( this );
     };
     AFrame.extend( Field, AFrame.Field, {
-        init: function( config ) {
-            Field.sc.init.call( this, config );
-            
-            this.format = this.getTarget().attr( 'data-time-format' ) || '12';
-        },
-        
         display: function( val ) {
             if( !val ) {
                 return;
@@ -24,7 +18,7 @@ MobileNotes.TimeField = ( function() {
             
             var hours = val.getHours();
             var ampm = '';
-            if( this.format === '12' ) {
+            if( getFormat.call( this ) === '12' ) {
                 if( !hours ) {
                     hours = 12;
                     ampm = 'am';
@@ -34,11 +28,18 @@ MobileNotes.TimeField = ( function() {
                 }
             }
             
-            var timeString = hours + ':' + val.getMinutes() + ampm;
+            var mins = val.getMinutes();
+            mins = mins < 10 ? '0' + mins : mins;
+            
+            var timeString = hours + ':' + mins + ampm;
             
             Field.sc.display.call( this, timeString );
         }
     } );
+    
+    function getFormat() {
+        return this.getTarget().attr( 'data-time-format' ) || '12';
+    }
     
     return Field;
 }() );

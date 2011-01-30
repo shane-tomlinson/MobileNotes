@@ -14,10 +14,12 @@
         <!-- source files here -->
         <script type="text/javascript" src="../scripts/mobilenotes.js"></script>
         <script type="text/javascript" src="../scripts/fields/dateField.js"></script>
+        <script type="text/javascript" src="../scripts/fields/timeField.js"></script>
         
         
         <!-- specs here -->
         <script type="text/javascript" src="spec/dateField_spec.js"></script>
+        <script type="text/javascript" src="spec/timeField_spec.js"></script>
 
         <link rel="stylesheet" type="text/css" href="stylesheets/test.css">
 
@@ -26,6 +28,7 @@
     <body>
     
         <input type="date" id="dateField" />
+        <input type="time" id="timeField" data-time-format="12" />
         
         <script type="text/javascript">
           jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
