@@ -14,13 +14,6 @@ MobileNotes.EditNoteDisplay = ( function() {
         init: function( config ) {
             config.dataSource = AFrame.DataContainer( {} );
             
-            /**
-            * the extra info display
-            * @config extraInfoDisplay
-            * @type {AFrame.DataForm}
-            */
-            this.extraInfoDisplay = config.extraInfoDisplay;
-            
             Display.sc.init.call( this, config );
         },
         
@@ -38,8 +31,6 @@ MobileNotes.EditNoteDisplay = ( function() {
             this.dataSource.forEach( function( val, key ) {
                 this.dataContainer.set( key, val );
             }, this );
-            
-            this.extraInfoDisplay.setDataSource( dataSource );
         },
         
         checkValidity: function() {

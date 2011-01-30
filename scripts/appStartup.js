@@ -94,8 +94,7 @@ $( function() {
 	var noteExtraInfoDisplay = AFrame.construct( {
 		type: MobileNotes.NoteExtraInfoDisplay,
 		config: {
-			target: '#noteExtraInfo',
-			formFieldFactory: formFieldFactory
+			target: '#noteExtraInfo'
 		}
 	} );
 	
@@ -104,9 +103,7 @@ $( function() {
 	var editNoteForm = AFrame.construct( {
 		type: MobileNotes.EditNoteDisplay,
 		config: {
-			target: '#editNoteForm',
-			formFieldFactory: formFieldFactory,
-			extraInfoDisplay: noteExtraInfoDisplay
+			target: '#editNoteForm'
 		}
 	} );
 	
@@ -138,6 +135,9 @@ $( function() {
 			focus: !!newNote,
 			disableDelete: !!newNote
 		} );
+            
+        noteExtraInfoDisplay.setDataSource( dataContainer );
+        
 	};
 	
 	var loading = true;
