@@ -26,7 +26,7 @@ MobileNotes.DateField = ( function() {
 
             var dateString = monthName + ' ' + date + ', ' + year;
             
-            MobileNotes.DateField.sc.display.call( this, dateString );
+            Field.sc.display.call( this, dateString );
         }
     } );
     

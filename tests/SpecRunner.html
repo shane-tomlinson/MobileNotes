@@ -2,18 +2,22 @@
 <html>
     <head>
         <title>MobileNotes Unit Tests</title>
-        <script type="text/javascript" src="../scripts/ext/jquery-1.4.4.js" ></script>
+        <script type="text/javascript" src="../scripts/ext/jquery-1.4.4.min.js" ></script>
         <script type="text/javascript" src="../scripts/ext/aframe-current-jquery.js" ></script>
 
         <link rel="stylesheet" type="text/css" href="lib/jasmine.css">
         <script type="text/javascript" src="lib/jasmine.js"></script>
         <script type="text/javascript" src="lib/jasmine-html.js"></script>
         <script type="text/javascript" src="lib/mouseEmulate.js"></script>
+        <script type="text/javascript" src="lib/date.js"></script>
         
         <!-- source files here -->
+        <script type="text/javascript" src="../scripts/mobilenotes.js"></script>
+        <script type="text/javascript" src="../scripts/fields/dateField.js"></script>
         
         
         <!-- specs here -->
+        <script type="text/javascript" src="spec/dateField_spec.js"></script>
 
         <link rel="stylesheet" type="text/css" href="stylesheets/test.css">
 
@@ -21,6 +25,8 @@
     
     <body>
     
+        <input type="date" id="dateField" />
+        
         <script type="text/javascript">
           jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
           jasmine.getEnv().execute();
