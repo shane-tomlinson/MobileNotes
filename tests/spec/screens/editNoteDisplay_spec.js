@@ -21,6 +21,9 @@ describe( "EditNoteDisplay spec", function() {
     it( 'raises onSave when the btnSaveNote clicked', function() {
         screen.bindEvent( 'onSave', genericHandler );
         
+        // a data source is expected to be set whenever we click save.
+        screen.setDataSource( {} );
+        
         $( '.btnSaveNote' ).trigger( 'click' );
         
         expect( events.onSave ).toBeDefined();

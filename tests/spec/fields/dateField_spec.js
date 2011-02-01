@@ -2,6 +2,9 @@ describe( "DateField spec", function() {
 
     var dateField;
     
+    beforeEach( function() {
+        $( '#dateField' ).val( '' );
+    } );
     
     it( 'is creatable', function() {
         dateField = AFrame.construct( {

@@ -2,7 +2,10 @@ describe( "TimeField spec", function() {
 
     var timeField;
     
-    
+    beforeEach( function() {
+        $( '#timeField' ).val( '' );
+    } );
+        
     it( 'is creatable', function() {
         timeField = AFrame.construct( {
             type: MobileNotes.TimeField,
