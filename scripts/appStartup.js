@@ -65,7 +65,7 @@ $( function() {
 		type: AFrame.List,
 		config: {
 			target: '#notelist',
-			listElementFactory: function( index, data ) {
+			listElementFactory: function( data, index ) {
 				return $( $( '#templateNote' ).html() );
 			}
 		},

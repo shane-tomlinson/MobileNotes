@@ -12,13 +12,13 @@ MobileNotes.NoteDBAccess = ( function() {
     };
     AFrame.extend( NoteDBAccess, AFrame.AObject, {
         init: function( config ) {
-            this.localDB = WebSQLDB.getInstance();
+            this.noteAdapter = NoteAdapter.getInstance();
             
             NoteDBAccess.sc.init.call( this, config );
         },
         
         load: function( options ) {
-            this.localDB.load( {}, onComplete.bind( this ) );
+            this.noteAdapter.load( {}, onComplete.bind( this ) );
             
             function onComplete( notes ) {
                 var noteData = copyNoteData.call( this, notes );
@@ -39,49 +39,45 @@ MobileNotes.NoteDBAccess = ( function() {
             note.date = note.date || new Date();
             note.edit_date = note.edit_date || new Date();
 
-            this.localDB.add( note, function( noteData ) {
+            this.noteAdapter.add( note, function( noteData ) {
                 options.onComplete && options.onComplete( noteData );
             }.bind( this ) );
         },
         
         save: function( note, options ) {
             var persistenceNote = note.serializeItems();
-            this.localDB.save( persistenceNote, options.onComplete );
+            this.noteAdapter.save( persistenceNote, options.onComplete );
         },
 
         del: function( data, options ) {
-            this.localDB.del( data.data, options.onComplete );
+            this.noteAdapter.del( data.data, options.onComplete );
         }
 
     } );
 
     
     /**
-    * A WebSQL Database interface
-    * @class WebSQLDB
+    * An adapter for the notes to a WebSQL Database.
+    * @class NoteAdapter
     * @extends AFrame.AObject
     */
-    function WebSQLDB() {
-        WebSQLDB.sc.constructor.apply( this, arguments );
+    function NoteAdapter() {
+        NoteAdapter.sc.constructor.apply( this, arguments );
     };
-    WebSQLDB.getInstance = function() {
-        if( !WebSQLDB.instance ) {
-            WebSQLDB.instance = AFrame.construct( {
-                type: WebSQLDB
+    NoteAdapter.getInstance = function() {
+        if( !NoteAdapter.instance ) {
+            NoteAdapter.instance = AFrame.construct( {
+                type: NoteAdapter
             } );
         }
         
-        return WebSQLDB.instance;
+        return NoteAdapter.instance;
     };
-    WebSQLDB.isSupported = function() {
-        return !!window.openDatabase;
-    };
-    AFrame.extend( WebSQLDB, AFrame.AObject, {
+    AFrame.extend( NoteAdapter, AFrame.AObject, {
         init: function( config ) {
-            if( window.openDatabase ) {
-                this.db = window.openDatabase( 'mobilenotes', '0.01', 'MobileNotes Note Database', 10*1024*1024 );
-            }
-            WebSQLDB.sc.init.apply( this, arguments );
+            this.db = MobileNotes.WebSQLDB.getInstance().getDB();
+
+            NoteAdapter.sc.init.apply( this, arguments );
         },
         
         load: function( options, callback ) {
