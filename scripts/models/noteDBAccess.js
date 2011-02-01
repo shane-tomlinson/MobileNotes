@@ -7,24 +7,11 @@
 MobileNotes.NoteDBAccess = ( function() {
     "use strict";
     
-    function noteModelFactory( data ) {
-        var noteModel = AFrame.construct( {
-            type: AFrame.Model,
-            config: {
-                schema: this.schema,
-                data: data
-            }
-        } );
-        
-        return noteModel;
-    };
-    
     var NoteDBAccess = function() {
         NoteDBAccess.sc.constructor.call( this );
     };
     AFrame.extend( NoteDBAccess, AFrame.AObject, {
         init: function( config ) {
-            this.schema = config.schema;
             this.localDB = WebSQLDB.getInstance();
             
             NoteDBAccess.sc.init.call( this, config );
@@ -34,17 +21,17 @@ MobileNotes.NoteDBAccess = ( function() {
             this.localDB.load( {}, onComplete.bind( this ) );
             
             function onComplete( notes ) {
-                var noteModels = createNoteModels.call( this, notes );
-                options.onComplete && options.onComplete( noteModels );
+                var noteData = copyNoteData.call( this, notes );
+                options.onComplete && options.onComplete( noteData );
             };
             
-            function createNoteModels( notes ) {
-                var noteModels = [];
+            function copyNoteData( notes ) {
+                var noteData = [];
                 notes.forEach( function( note, index ) {
-                    var model = noteModelFactory.call( this, note );
-                    noteModels.push( model );
+                    var data = jQuery.extend( {}, note );
+                    noteData.push( data );
                 }, this );
-                return noteModels;
+                return noteData;
             }
         },
         
@@ -53,8 +40,7 @@ MobileNotes.NoteDBAccess = ( function() {
             note.edit_date = note.edit_date || new Date();
 
             this.localDB.add( note, function( noteData ) {
-                var noteModel = noteModelFactory.call( this, noteData );
-                options.onComplete && options.onComplete( noteModel );
+                options.onComplete && options.onComplete( noteData );
             }.bind( this ) );
         },
         

@@ -6,10 +6,7 @@ $( function() {
     // We are first creating a DB Adapter - the DB Adapter will save notes to a local WebSQL database
     //  if the browser supports it.
     var noteDBAdapter = AFrame.construct( { 
-    	type: MobileNotes.NoteDBAccess,
-        config: {
-            schema: MobileNotes.NoteSchemaConfig
-        }
+    	type: MobileNotes.NoteDBAccess
     } );
 	
     // We are then creating a note store that is tied to the persistence layer.
@@ -25,7 +22,13 @@ $( function() {
 					deleteCallback: noteDBAdapter.del.bind( noteDBAdapter ),
 					
 				}
-			}
+			},
+            {
+                type: AFrame.CollectionPluginModel,
+                config: {
+                    schema: MobileNotes.NoteSchemaConfig
+                }
+            }
 		]
 	} );
 	
