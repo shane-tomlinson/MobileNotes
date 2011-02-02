@@ -12,6 +12,7 @@
 	
 	<script type="text/javascript" src="scripts/ext/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="scripts/ext/jquery.mobile-1.0a2.js"></script>
+	<script type="text/javascript" src="scripts/ext/jquery.tmpl.min.js"></script>
 	
 	<script type="text/javascript" src="scripts/ext/aframe-current-jquery.js"></script>
 	<script type="text/javascript" src="scripts/ext/persistence.js"></script>
@@ -29,6 +30,7 @@
 	<script type="text/javascript" src="scripts/screens/editNoteDisplay.js"></script>
 	<script type="text/javascript" src="scripts/screens/deleteNoteConfirm.js"></script>
 	<script type="text/javascript" src="scripts/screens/noteExtraInfoDisplay.js"></script>
+	<script type="text/javascript" src="scripts/screens/tagDisplay.js"></script>
 
 	<script type="text/javascript">
 		
@@ -110,40 +112,48 @@
 				<label>Synced with Server:</label><span type="date" data-field="sync_date"></span> - <span type="time" data-field="sync_date"></span>
 			</div>
 			
-			<a href="#noteShare" data-rel="dialog" data-role="button" data-transition="pop">Share</a>
-			<a href="#noteTags" data-rel="dialog" data-role="button" data-transition="pop">Tags</a>
+			<a href="#noteShare" data-role="button">Share</a>
+			<a href="#noteTags" data-role="button">Tags</a>
 			
 		</div>
 		
-		<div id="noteTags" data-role="dialog" data-theme="b">
+		<div id="noteTags" data-role="page" data-theme="b">
+            <header data-role="header">
+                <h1>Tag Note</h1>
+            </header>
+            
 			<div data-role="content">
 				<h3>Tags for <span type="text" data-field="title" data-novalue-text="No title given">Note Title</span></h3>
-				<!--div data-role="fileldcontain">
+                
+				<div data-role="fileldcontain">
 					<fieldset data-role="controlgroup">
-						<input type="checkbox" name="tag1" id="tag1" />
-						<label for="tag1">Ubernote</label>
-						<input type="checkbox" name="tag1" id="tag2" />
-						<label for="tag2">Fitmo</label>
-						<input type="checkbox" name="tag1" id="tag3" />
-						<label for="tag3">jQuery Mobile</label>
+                        <ul id="taglist">
+                        </ul>
 					</fieldset>
-				</div-->
+				</div>
 				
-				<a href="#noteExtraInfo" data-role="button" data-theme="a">Back</a>
-			</div>
+                <label for="newtagname">New Tag:</label>
+                <input type="text" name="newtagname" id="newtagname" />
+                
+                <a href="#" id="btnNewTag" data-role="button">New Tag</a>
+                <a href="#editNoteForm" data-role="button">Back To Note</a>
 		</div>
 		
-		<div id="noteShare" data-role="dialog">
+		<div id="noteShare" data-role="page">
 			<header data-role="header">
 				<h1>Share</h1>
 			</header>
 			
 			<div data-role="content">
-				<div data-role="fileldcontain">
+				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
-						<input type="checkbox" name="tag1" id="shane" />
-						<label for="shane">Shane</label>
-					</fieldset>
+                        <ul>
+                            <li>
+                                <input type="checkbox" name="tag1" id="shane" />
+                                <label for="shane">Shane</label>
+                            </li>
+                        </ul>
+                    </fieldset>
 				</div>
 				
 				<a href="#noteExtraInfo" data-role="button" data-theme="a">Back</a>
@@ -211,7 +221,6 @@
 
 	</div>
 	
-
 <script type="text/html" id="templateNote">
 	<li class="note">
 		<a href="#editNoteForm">
@@ -220,6 +229,14 @@
 		</a>
 	</li>
 </script>
+
+<script type="text/html" id="templateTag">
+	<li>
+        <input type="checkbox" name="${id}" id="${id}" />
+        <label for="${id}" data-field="name">${name}</label>
+	</li>
+</script>
+
 <script type="text/javascript">
 
 var _gaq = _gaq || [];

@@ -44,16 +44,17 @@ MobileNotes.PersistenceDBAccess = ( function() {
         },
         
         add: function( item, options ) {
-            item.date = item.date || new Date();
-            item.edit_date = item.edit_date || new Date();
+            item.set( 'date', item.get( 'date' ) || new Date() );
+            item.set( 'edit_date', item.get( 'edit_date' ) || new Date() );
 
-            var serializeditem = this.schema.serializeItems( item );
+            var serializeditem = item.serializeItems();
             AFrame.remove( serializeditem, 'id' );
             
             var itemDBObject = new this.DBTask( serializeditem );
             persistence.add( itemDBObject );
+            persistence.flush();
                 
-            item.id = itemDBObject.id;
+            item.set( 'id', itemDBObject.id );
             options.onComplete( item );
         },
         
@@ -75,7 +76,7 @@ MobileNotes.PersistenceDBAccess = ( function() {
         },
 
         del: function( item, options ) {
-            this.DBTask.all().filter( 'id', '=', item.data.id ).one( null, 
+            this.DBTask.all().filter( 'id', '=', item.get( 'id' ) ).one( null, 
                 function( itemDBObject ) {
                     persistence.remove( itemDBObject );
                     persistence.flush();

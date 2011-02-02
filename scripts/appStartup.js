@@ -3,158 +3,37 @@ $( function() {
 
     var currNoteCID;
     
-    // We are first creating a DB Adapter - the DB Adapter will save notes to a local WebSQL database
-    //  if the browser supports it.
-    var noteDBAdapter = AFrame.construct( { 
-    	type: MobileNotes.PersistenceDBAccess,
-        config: {
-            schema: MobileNotes.NoteSchemaConfig,
-            tableName: 'Note'
-        }
-        
-    } );
-	
-    var tagDBAdapter = AFrame.construct( { 
-    	type: MobileNotes.PersistenceDBAccess,
-        config: {
-            schema: MobileNotes.TagSchemaConfig,
-            tableName: 'Tag'
-        }
-        
-    } );
-	
-    // We are then creating a note store that is tied to the persistence layer.
-	var noteStore = AFrame.construct( {
-		type: AFrame.CollectionArray,
-		plugins: [
-			{
-				type: AFrame.CollectionPluginPersistence,
-				config: {
-					loadCallback: noteDBAdapter.load.bind( noteDBAdapter ),
-					addCallback: noteDBAdapter.add.bind( noteDBAdapter ),
-					saveCallback: noteDBAdapter.save.bind( noteDBAdapter ),
-					deleteCallback: noteDBAdapter.del.bind( noteDBAdapter ),
-				}
-			},
-            {
-                type: AFrame.CollectionPluginModel,
-                config: {
-                    schema: MobileNotes.NoteSchemaConfig
-                }
-            }
-		]
-	} );
-	
-    // Set up a form field factory.  Note, we are using a specialized form field factory because
-    //  we have some custom fields.  AFrame.Field is the default field type created if there is
-    //  no formFieldFactory
-	var formFieldFactory = function( element, meta ) {
-        var type = $( element ).attr( 'type' );
-        var constructors = {
-            date: MobileNotes.DateField,
-            time: MobileNotes.TimeField,
-            'default': AFrame.Field
-        };
-        
-        var constructor = constructors[ type ] || constructors[ 'default' ];
-        
-        var field = AFrame.construct( {
-            type: constructor,
-            config: {
-                target: element
-            }
-        } );
-
-		return field;
-	};
-	
     // set the default form field factory to use our own homegrown version that 
     // creates date and time fields.
     AFrame.Form.setDefaultFieldFactory( formFieldFactory );
+
+    // We are first creating a DB Adapter - This uses persistence.js
+	var noteDBAdapter = createNoteDBAdapter();
+    
+    // We are then creating a note store that is tied to the persistence layer.
+    var noteStore = createNoteStore();
+	
     
     // create the note list that is bound to the noteStore.  For every note, create a form row,
     // overriding the default form factory to use our own formFieldFactory.
-	var noteList = AFrame.construct( {
-		type: AFrame.List,
-		config: {
-			target: '#notelist',
-			listElementFactory: function( data, index ) {
-				return $( $( '#templateNote' ).html() );
-			}
-		},
-		plugins: [
-			{   // this binds the list to the note store.  Whenever notes are added or deleted
-                // from the note store, the list is automatically updated.
-				type: AFrame.ListPluginBindToCollection,
-				config: {
-					collection: noteStore
-				}
-			},
-			{
-                // for every note, create a form that is bound to the fields specified in the template.
-				type: AFrame.ListPluginFormRow
-			}
-		]
-	} );
+	var noteList = createNoteList();
 
-	
+    
+    // Create an adapter, store, and list for the tags.
+    var tagDBAdapter = createTagDBAdapter();
+    var tagStore = createTagStore();
+    var tagList = createTagList();
+	var tagDisplay = createTagDisplay();
+    
 	// The note delete confirmation
-	var deleteConfirmDisplay = AFrame.construct( {
-		type: MobileNotes.DeleteNoteConfirm,
-		config: {
-			target: '#deleteNoteConfirm'
-		}
-	} );
+	var deleteConfirmDisplay = createConfirmDisplay();
 	
     // Extra info about the note.
-	var noteExtraInfoDisplay = AFrame.construct( {
-		type: MobileNotes.NoteExtraInfoDisplay,
-		config: {
-			target: '#noteExtraInfo'
-		}
-	} );
+	var noteExtraInfoDisplay = createNoteExtraInfoDisplay();
 	
     // this is the form that actually edits the notes.  It takes a reference
     //  to both the extra info and delete confirmation displays.
-	var editNoteForm = AFrame.construct( {
-		type: MobileNotes.EditNoteDisplay,
-		config: {
-			target: '#editNoteForm'
-		}
-	} );
-	
-    // when the delete form says delete, delete from the store.
-	deleteConfirmDisplay.bindEvent( 'onDelete', function() {
-        noteStore.del( currNoteCID );
-	} );
-	
-    // when the note edit form says to save, save to the store.
-	editNoteForm.bindEvent( 'onSave', function() {
-        noteStore.save( currNoteCID );
-	} );
-	
-    // we are keeping track of whether the current note is a new note or not.  If it is,
-    //  and the user hits cancel, delete the note from the store, it was only temporary.
-	var newNote;
-	editNoteForm.bindEvent( 'onCancel', function() {
-		if( newNote ) {
-			noteStore.del( currNoteCID );			
-		}
-	} );
-	
-    
-	var editNote = function( dataContainer, newNote ) {
-        currNoteCID = dataContainer.cid;
-        
-		editNoteForm.setDataSource( dataContainer );
-		editNoteForm.show( {
-			focus: !!newNote,
-			disableDelete: !!newNote
-		} );
-            
-        noteExtraInfoDisplay.setDataSource( dataContainer );
-        
-	};
+	var editNoteForm = createNoteEditForm();
 	
 	var loading = true;
     // When a new note is inserted, bind some events to it to put it into edit mode.
@@ -177,7 +56,8 @@ $( function() {
 	
     // finally, load the note store.
 	noteStore.load( { page: 0 } );
-    
+    tagStore.load();
+
     // update the note list.
 	$( '#notelist' ).listview();
 	loading = false;
@@ -194,7 +74,235 @@ $( function() {
 			insertAt: 0
 		} );
 	} );
-	
+
+
+    function createNoteDBAdapter() {
+        var noteDBAdapter = AFrame.construct( { 
+            type: MobileNotes.PersistenceDBAccess,
+            config: {
+                schema: MobileNotes.NoteSchemaConfig,
+                tableName: 'Note'
+            }
+            
+        } );
+        
+        return noteDBAdapter;
+    }
+    
+    function createNoteStore() {
+        var noteStore = AFrame.construct( {
+            type: AFrame.CollectionArray,
+            plugins: [
+                {
+                    type: AFrame.CollectionPluginPersistence,
+                    config: {
+                        loadCallback: noteDBAdapter.load.bind( noteDBAdapter ),
+                        addCallback: noteDBAdapter.add.bind( noteDBAdapter ),
+                        saveCallback: noteDBAdapter.save.bind( noteDBAdapter ),
+                        deleteCallback: noteDBAdapter.del.bind( noteDBAdapter ),
+                    }
+                },
+                {
+                    type: AFrame.CollectionPluginModel,
+                    config: {
+                        schema: MobileNotes.NoteSchemaConfig
+                    }
+                }
+            ]
+        } );
+        
+        return noteStore;
+    }
+
+    function createNoteList() {
+        var noteList = AFrame.construct( {
+            type: AFrame.List,
+            config: {
+                target: '#notelist',
+                listElementFactory: function( data, index ) {
+                    return $( $( '#templateNote' ).html() );
+                }
+            },
+            plugins: [
+                {   // this binds the list to the note store.  Whenever notes are added or deleted
+                    // from the note store, the list is automatically updated.
+                    type: AFrame.ListPluginBindToCollection,
+                    config: {
+                        collection: noteStore
+                    }
+                },
+                {
+                    // for every note, create a form that is bound to the fields specified in the template.
+                    type: AFrame.ListPluginFormRow
+                }
+            ]
+        } );
+        
+        return noteList;
+    }
+
+    function createConfirmDisplay() {
+        var deleteConfirmDisplay = AFrame.construct( {
+            type: MobileNotes.DeleteNoteConfirm,
+            config: {
+                target: '#deleteNoteConfirm'
+            }
+        } );
+         // when the delete form says delete, delete from the store.
+        deleteConfirmDisplay.bindEvent( 'onDelete', function() {
+            noteStore.del( currNoteCID );
+        } );
+       
+        return deleteConfirmDisplay;
+    }
+    
+    function createNoteExtraInfoDisplay() {
+        var noteExtraInfoDisplay = AFrame.construct( {
+            type: MobileNotes.NoteExtraInfoDisplay,
+            config: {
+                target: '#noteExtraInfo'
+            }
+        } );
+        return noteExtraInfoDisplay;
+    }
+    
+    function createNoteEditForm() {
+        var editNoteForm = AFrame.construct( {
+            type: MobileNotes.EditNoteDisplay,
+            config: {
+                target: '#editNoteForm'
+            }
+        } );
+        // when the note edit form says to save, save to the store.
+        editNoteForm.bindEvent( 'onSave', function() {
+            noteStore.save( currNoteCID );
+        } );
+        
+        // we are keeping track of whether the current note is a new note or not.  If it is,
+        //  and the user hits cancel, delete the note from the store, it was only temporary.
+        var newNote;
+        editNoteForm.bindEvent( 'onCancel', function() {
+            if( newNote ) {
+                noteStore.del( currNoteCID );			
+            }
+        } );
+        
+        
+       return editNoteForm;
+    }
+
+    function createTagDBAdapter() {
+        var tagDBAdapter = AFrame.construct( { 
+            type: MobileNotes.PersistenceDBAccess,
+            config: {
+                schema: MobileNotes.TagSchemaConfig,
+                tableName: 'Tag'
+            }
+            
+        } );
+        return tagDBAdapter;
+    }
+
+    function createTagStore() {
+        var tagStore = AFrame.construct( {
+            type: AFrame.CollectionArray,
+            plugins: [
+                {
+                    type: AFrame.CollectionPluginPersistence,
+                    config: {
+                        loadCallback: tagDBAdapter.load.bind( tagDBAdapter ),
+                        addCallback: tagDBAdapter.add.bind( tagDBAdapter ),
+                        saveCallback: tagDBAdapter.save.bind( tagDBAdapter ),
+                        deleteCallback: tagDBAdapter.del.bind( tagDBAdapter ),
+                    }
+                },
+                {
+                    type: AFrame.CollectionPluginModel,
+                    config: {
+                        schema: MobileNotes.TagSchemaConfig
+                    }
+                }
+            ]
+        } );
+        
+        return tagStore;
+    }
+    
+    function createTagDisplay() {
+        var tagDisplay = AFrame.construct( {
+            type: MobileNotes.TagDisplay,
+            config: {
+                target: '#noteTags',
+                store: tagStore
+            }
+        } );
+        
+        return tagDisplay;
+    }
+    function createTagList() {
+        var noteList = AFrame.construct( {
+            type: AFrame.List,
+            config: {
+                target: '#taglist',
+                listElementFactory: function( data, index ) {
+                    return $.tmpl( $( '#templateTag' ).html(), data.getDataObject() );
+                }
+            },
+            plugins: [
+                {   // this binds the list to the note store.  Whenever notes are added or deleted
+                    // from the note store, the list is automatically updated.
+                    type: AFrame.ListPluginBindToCollection,
+                    config: {
+                        collection: tagStore
+                    }
+                },
+                {
+                    // for every note, create a form that is bound to the fields specified in the template.
+                    type: AFrame.ListPluginFormRow
+                }
+            ]
+        } );
+        
+        return noteList;
+    }
+    
+
+    // Set up a form field factory.  Note, we are using a specialized form field factory because
+    //  we have some custom fields.  AFrame.Field is the default field type created if there is
+    //  no formFieldFactory
+	function formFieldFactory( element, meta ) {
+        var type = $( element ).attr( 'type' );
+        var constructors = {
+            date: MobileNotes.DateField,
+            time: MobileNotes.TimeField,
+            'default': AFrame.Field
+        };
+        
+        var constructor = constructors[ type ] || constructors[ 'default' ];
+        
+        var field = AFrame.construct( {
+            type: constructor,
+            config: {
+                target: element
+            }
+        } );
+
+		return field;
+	}
+    
+ 	function editNote( dataContainer, newNote ) {
+        currNoteCID = dataContainer.cid;
+        
+		editNoteForm.setDataSource( dataContainer );
+		editNoteForm.show( {
+			focus: !!newNote,
+			disableDelete: !!newNote
+		} );
+            
+        noteExtraInfoDisplay.setDataSource( dataContainer );
+        
+	};
+   
 } );
 
 function parseISO8601(str) {
