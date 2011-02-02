@@ -34,8 +34,8 @@ MobileNotes.EditNoteDisplay = ( function() {
         },
         
         checkValidity: function() {
-            // check the validity vs the original model.  See if things are kosher before
-            //  we save.
+            // check the validity vs the original model.  
+            //  See if things are kosher before we save.
 		    var valid = Display.sc.checkValidity.call( this )
                 && this.validateFormFieldsWithModel( this.dataSource );
 		

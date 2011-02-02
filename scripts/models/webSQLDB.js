@@ -1,19 +1,27 @@
+/**
+* A WebSQL database driver
+* @class MobileNotes.WebSQLDB
+* @extends AFrame.AObject
+* @constructor
+*/
 MobileNotes.WebSQLDB = ( function() {
+    "use strict";
+    
     var DB = function() {
         DB.sc.constructor.call( this );
     };
     AFrame.extend( DB, AFrame.AObject, {
         init: function() {
-            if( window.openDatabase ) {
-                this.db = window.openDatabase( 'mobilenotes', '0.01', 'MobileNotes Note Database', 10*1024*1024 );
+            if( persistence.store ) {
+                persistence.store.websql.config( persistence, 'mobilenotes2', 'MobileNotes Note Database', 10*1024*1024 );
             }            
-        },
-        
-        getDB: function() {
-            return this.db;
         }
     } );
     
+    /**
+    * Get the unique instance of the WebSQLDB driver.
+    * @method DB.getInstance()
+    */
     DB.getInstance = function() {
         if( !DB.__uniqueInstance ) {
             DB.__uniqueInstance = AFrame.construct( {
