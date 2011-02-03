@@ -162,7 +162,7 @@ $( function() {
         var deleteConfirmDisplay = AFrame.construct( {
             type: MobileNotes.NoteDeleteConfirm,
             config: {
-                target: '#deleteNoteConfirm'
+                target: '#noteDeleteConfirm'
             }
         } );
          // when the delete form says delete, delete from the store.
@@ -270,7 +270,8 @@ $( function() {
             config: {
                 target: '#taglist',
                 listElementFactory: function( data, index ) {
-                    return $.tmpl( $( '#templateTag' ).html(), data.getDataObject() );
+                    var el = $.tmpl( $( '#templateTag' ).html(), data.getDataObject() );
+                    return el;
                 }
             },
             plugins: [
@@ -280,11 +281,12 @@ $( function() {
                     config: {
                         collection: tagStore
                     }
-                },
+                }/*,
                 {
                     // for every note, create a form that is bound to the fields specified in the template.
                     type: AFrame.ListPluginFormRow
                 }
+                */
             ]
         } );
         

@@ -33,11 +33,11 @@
 
 	<script type="text/javascript">
 		
-		$(document).bind("mobileinit", function(){
+		$( document ).bind( "mobileinit", function(){
 			 $.extend( $.mobile , {
 				ajaxLinksEnabled: true
 			 } );
-		});
+		} );
 		
 	</script>
 
@@ -64,7 +64,7 @@
 
 		<div id="noteEditForm" data-role="page" data-theme="b">
 			<header data-role="header" data-nobackbtn="true">
-				<a href="#deleteNoteConfirm" class="btnDeleteNote ui-btn-right" data-icon="delete">Delete</a>
+				<a href="#noteDeleteConfirm" class="btnDeleteNote ui-btn-right" data-icon="delete">Delete</a>
 				<h1>Edit Note</h1>
 			</header>
 			
@@ -75,6 +75,7 @@
 				<div data-role="navbar">
 					<ul>
 						<li><a href="#main" class="btnSaveNote" data-icon="check">Save</a></li>
+						<li><a href="#noteTags" class="btnExtraNoteInfo" data-icon="grid" data-transition="slideup">Tag</a></li>
 						<li><a href="#noteExtraInfo" class="btnExtraNoteInfo" data-icon="info" data-transition="slideup">Tools &amp; Info</a></li>
 						<li><a href="#main" class="btnCancelNote" data-icon="back">Cancel</a></li>
 					</ul>
@@ -82,7 +83,7 @@
 			</footer>
 		</div>
 
-		<div id="deleteNoteConfirm" data-role="page" data-theme="c">
+		<div id="noteDeleteConfirm" data-role="page" data-theme="c">
 			<header data-role="header" data-nobackbtn="true">
 				<h1>Delete Note???</h1>
 			</header>
@@ -94,7 +95,7 @@
 		</div>
 
 		<div id="noteExtraInfo" data-role="page" data-theme="b">
-			<header data-role="header">
+			<header data-role="header" data-nobackbtn="true">
 				<h1 type="text" data-field="title" data-novalue-text="No title given">Note Title</h1>
 			</header>
 			
@@ -111,12 +112,12 @@
 			</div>
 			
 			<a href="#noteShare" data-role="button">Share</a>
-			<a href="#noteTags" data-role="button">Tags</a>
+            <a href="#noteEditForm" data-role="button">Back To Note</a>
 			
 		</div>
 		
 		<div id="noteTags" data-role="page" data-theme="b">
-            <header data-role="header">
+            <header data-role="header" data-nobackbtn="true">
                 <h1>Tag Note</h1>
             </header>
             
@@ -124,21 +125,20 @@
 				<h3>Tags for <span type="text" data-field="title" data-novalue-text="No title given">Note Title</span></h3>
                 
 				<div data-role="fieldcontain">
-					<fieldset data-role="controlgroup">
-                        <ul id="taglist">
-                        </ul>
+					<fieldset id="taglist" data-role="controlgroup">
 					</fieldset>
 				</div>
 				
                 <label for="newtagname">New Tag:</label>
-                <input type="text" name="newtagname" id="newtagname" />
+                <input type="text" name="newtagname" placeholder="Tag Name" id="newtagname" />
                 
                 <a href="#" id="btnNewTag" data-role="button">New Tag</a>
                 <a href="#noteEditForm" data-role="button">Back To Note</a>
+            </div>
 		</div>
 		
 		<div id="noteShare" data-role="page">
-			<header data-role="header">
+			<header data-role="header" data-nobackbtn="true">
 				<h1>Share</h1>
 			</header>
 			
@@ -146,15 +146,11 @@
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
                         <ul>
-                            <li>
-                                <input type="checkbox" name="tag1" id="shane" />
-                                <label for="shane">Shane</label>
-                            </li>
                         </ul>
                     </fieldset>
 				</div>
 				
-				<a href="#noteExtraInfo" data-role="button" data-theme="a">Back</a>
+				<a href="#noteEditForm" data-role="button" data-theme="a">Back To Note</a>
 			</div>
 			
 		</div>
@@ -226,11 +222,22 @@
 	</li>
 </script>
 
+<script type="text/html" id="">
+    <div class="ui-checkbox">
+        <input type="checkbox" id="${id}" name="${id}" />
+        <label data-field="name" for="${id}" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-bottom ui-controlgroup-last ui-btn-up-c">
+            <span class="ui-btn-inner ui-corner-bottom ui-controlgroup-last">
+                <span class="ui-btn-text">${name}</span>
+                <span class="ui-icon ui-icon-ui-icon-checkbox-off ui-icon-checkbox-off"></span>
+            </span>
+        </label>
+    </div>
+</script>
 <script type="text/html" id="templateTag">
-	<li>
-        <input type="checkbox" name="${id}" id="${id}" />
-        <label for="${id}" data-field="name">${name}</label>
-	</li>
+    <div>
+        <input type="checkbox" id="${id}" name="${id}" />
+        <label for="${id}">${name}</label>
+    </div>
 </script>
 
 <script type="text/javascript">

@@ -55,6 +55,8 @@ MobileNotes.NoteTagDisplay = (function() {
         var element = event.rowElement;
         
         this.bindDOMEvent( element, 'click', onRowClick, this );
+        
+        element.find( 'input' ).checkboxradio( { theme: 'c' } );
     }
     
     function onRowClick( event ) {
@@ -65,18 +67,21 @@ MobileNotes.NoteTagDisplay = (function() {
         var tagIDs = this.dataSource.get( 'tag_ids' ) || [];
 
         var func = checked ? addTag : removeTag;
-        func.call( this, tagID, tagIDs );
+        var changed = func.call( this, tagID, tagIDs );
 
-        this.dataSource.set( 'tag_ids', tagIDs );
+        if( changed ) {
+            this.dataSource.set( 'tag_ids', tagIDs );
+        }
     }
     
     function onTagsChange( event ) {
         var target = this.getTarget();
-        $( 'input[type=checkbox]', target ).removeAttr( 'checked' );
+        
+        $( 'input[type=checkbox]', target ).removeAttr( 'checked' ).checkboxradio( "refresh" );
         
         var tagIDs = event.value || [];
         tagIDs.forEach( function( tagID ) {
-            $( '#' + tagID, target ).attr( 'checked', 'checked' );
+            $( '#' + tagID, target ).attr( 'checked', 'checked' ).checkboxradio( "refresh" );
         } );
     }
     
@@ -84,6 +89,7 @@ MobileNotes.NoteTagDisplay = (function() {
         var index = tagIDs.indexOf( tagID );
         if( -1 == index ) {
             tagIDs.push( tagID );
+            return true;
         }
     }
     
@@ -91,6 +97,7 @@ MobileNotes.NoteTagDisplay = (function() {
         var index = tagIDs.indexOf( tagID );
         if( -1 != index ) {
             tagIDs.splice( index, 1 );
+            return true;
         }
     }
     
