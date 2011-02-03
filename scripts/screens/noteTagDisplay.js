@@ -5,6 +5,16 @@
 * @extends AFrame.Display
 * @constructor
 */
+/**
+* The list to where the tags are found
+* @config list
+* @type {AFrame.List}
+*/
+/**
+* The note data source where to get the list of note ids
+* @config dataSource
+* @type {AFrame.Model}
+*/
 MobileNotes.NoteTagDisplay = (function() {
     "use strict";
     
@@ -68,7 +78,6 @@ MobileNotes.NoteTagDisplay = (function() {
         tagIDs.forEach( function( tagID ) {
             $( '#' + tagID, target ).attr( 'checked', 'checked' );
         } );
-        
     }
     
     function addTag( tagID, tagIDs ) {

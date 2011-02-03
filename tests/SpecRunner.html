@@ -18,7 +18,7 @@
         
         <script type="text/javascript" src="../scripts/screens/noteDeleteConfirm.js"></script>
         <script type="text/javascript" src="../scripts/screens/noteEditDisplay.js"></script>
-        <script type="text/javascript" src="../scripts/screens/noteExtraInfo.js"></script>
+        <script type="text/javascript" src="../scripts/screens/noteTagDisplay.js"></script>
         
         
         <!-- specs here -->
@@ -27,6 +27,7 @@
         
         <script type="text/javascript" src="spec/screens/noteDeleteConfirm_spec.js"></script>
         <script type="text/javascript" src="spec/screens/noteEditDisplay_spec.js"></script>
+        <script type="text/javascript" src="spec/screens/noteTagDisplay_spec.js"></script>
 
         <link rel="stylesheet" type="text/css" href="stylesheets/test.css">
 
@@ -45,6 +46,13 @@
         <div id="editNote">
             <button class="btnSaveNote">Save</button>
             <button class="btnCancelNote">Cancel</button>
+        </div>
+        
+        <div id="noteTagDisplay">
+            <ul id="noteList"></ul>
+            
+            <input type="string" id="newtagname" />
+            <button id="btnNewTag">New Tag</button>
         </div>
         
         <script type="text/javascript">
