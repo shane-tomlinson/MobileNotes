@@ -9,5 +9,6 @@ MobileNotes.NoteSchemaConfig = {
         required: true
 	} },
 	date: { type: 'iso8601' },
-	edit_date: { type: 'iso8601' }
+	edit_date: { type: 'iso8601' },
+    tag_ids: { type: 'string', has_many: true }
 };

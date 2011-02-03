@@ -12,7 +12,7 @@ MobileNotes.NoteExtraInfoDisplay = (function() {
         Display.sc.constructor.call( this );
     };
     AFrame.extend( Display, AFrame.DataForm, {
-        init: function( config ) {
+/*        init: function( config ) {
             config.dataSource = {};
             Display.sc.init.call( this, config );
         },
@@ -24,6 +24,7 @@ MobileNotes.NoteExtraInfoDisplay = (function() {
                 this.dataContainer.set( key, val );
             }, this );
         }
+        */
     } );
 
     return Display;

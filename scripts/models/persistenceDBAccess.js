@@ -36,11 +36,24 @@ MobileNotes.PersistenceDBAccess = ( function() {
             
             allitems.list( null, function( results ) {
                 results.forEach( function( result ) {
-                    var item = jQuery.extend( {}, result );
+                    var item = this.schema.getAppData( result );
+                    this.schema.forEach( function( schemaRow, key ) {
+                        // convert any "has_many" rows from JSON.
+                        if( this.schema.rowHasMany( key ) ) {
+                            var rowData = item[ key ];
+                            try {
+                                rowData = JSON.parse( rowData );
+                            } catch( e ) {
+                                rowData = [];
+                            }
+                            item[ key ] = AFrame.array( rowData ) ? rowData : [];
+                        }
+                    }, this );
+                    
                     returnedItems.push( item );
-                } );
+                }, this );
                 options.onComplete( returnedItems );
-            } );
+            }.bind( this ) );
         },
         
         add: function( item, options ) {
@@ -66,12 +79,17 @@ MobileNotes.PersistenceDBAccess = ( function() {
                 function( itemDBObject ) {
                     for( var key in serializeditem ) {
                         if( key !== 'id' ) {
-                            itemDBObject[ key ] = serializeditem[ key ];
+                            var rowData = serializeditem[ key ];
+                            // convert any "has_many" rows to JSON.
+                            if( this.schema.rowHasMany( key ) ) {
+                                rowData = JSON.stringify( rowData );
+                            }
+                            itemDBObject[ key ] = rowData;
                         }
                     }
                     
                     persistence.flush();
-                } );
+                }.bind( this ) );
             
         },
 

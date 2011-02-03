@@ -1,10 +1,10 @@
 /**
 * A delete note confirm page
-* @class MobileNotes.DeleteNoteConfirm
+* @class MobileNotes.NoteDeleteConfirm
 * @extends AFrame.Display
 * @constructor
 */
-MobileNotes.DeleteNoteConfirm = ( function() {
+MobileNotes.NoteDeleteConfirm = ( function() {
     "use strict";
     
     var Display = function() {

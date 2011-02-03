@@ -18,12 +18,15 @@ $( function() {
     // overriding the default form factory to use our own formFieldFactory.
 	var noteList = createNoteList();
 
+
+    // noteEditModel holds the data for the note currently being edited.
+    var noteEditModel = createNoteEditModel();
     
     // Create an adapter, store, and list for the tags.
     var tagDBAdapter = createTagDBAdapter();
     var tagStore = createTagStore();
     var tagList = createTagList();
-	var tagDisplay = createTagDisplay();
+	var tagDisplay = createNoteTagDisplay();
     
 	// The note delete confirmation
 	var deleteConfirmDisplay = createConfirmDisplay();
@@ -38,14 +41,15 @@ $( function() {
 	var loading = true;
     // When a new note is inserted, bind some events to it to put it into edit mode.
 	noteList.bindEvent( 'onInsert', function( data ) {
+        var noteCID = data.data.getCID();
 		$( 'a', data.rowElement ).click( function( event ) {
 			newNote = false;
 			editNote( this );
-		}.bind( data.data ) );
+		}.bind( noteCID ) );
 		
 		if( MobileNotes.editAddedNote ) {
 			newNote = true;
-			editNote( data.data, true );
+			editNote( noteCID, true );
 			MobileNotes.editAddedNote = false;
 		}
 		
@@ -114,6 +118,18 @@ $( function() {
         return noteStore;
     }
 
+    function createNoteEditModel() {
+        var model = AFrame.construct( {
+            type: AFrame.Model,
+            config: {
+                schema: MobileNotes.NoteSchemaConfig,
+                data: {}
+            }
+        } );
+        
+        return model;
+    }
+    
     function createNoteList() {
         var noteList = AFrame.construct( {
             type: AFrame.List,
@@ -143,7 +159,7 @@ $( function() {
 
     function createConfirmDisplay() {
         var deleteConfirmDisplay = AFrame.construct( {
-            type: MobileNotes.DeleteNoteConfirm,
+            type: MobileNotes.NoteDeleteConfirm,
             config: {
                 target: '#deleteNoteConfirm'
             }
@@ -160,7 +176,8 @@ $( function() {
         var noteExtraInfoDisplay = AFrame.construct( {
             type: MobileNotes.NoteExtraInfoDisplay,
             config: {
-                target: '#noteExtraInfo'
+                target: '#noteExtraInfo',
+                dataSource: noteEditModel
             }
         } );
         return noteExtraInfoDisplay;
@@ -168,15 +185,14 @@ $( function() {
     
     function createNoteEditForm() {
         var editNoteForm = AFrame.construct( {
-            type: MobileNotes.EditNoteDisplay,
+            type: MobileNotes.NoteEditDisplay,
             config: {
-                target: '#editNoteForm'
+                target: '#editNoteForm',
+                dataSource: noteEditModel
             }
         } );
         // when the note edit form says to save, save to the store.
-        editNoteForm.bindEvent( 'onSave', function() {
-            noteStore.save( currNoteCID );
-        } );
+        editNoteForm.bindEvent( 'onSave', saveNote );
         
         // we are keeping track of whether the current note is a new note or not.  If it is,
         //  and the user hits cancel, delete the note from the store, it was only temporary.
@@ -191,6 +207,25 @@ $( function() {
        return editNoteForm;
     }
 
+    
+    function createNoteTagDisplay() {
+        var tagDisplay = AFrame.construct( {
+            type: MobileNotes.NoteTagDisplay,
+            config: {
+                target: '#noteTags',
+                list: tagList,
+                dataSource: noteEditModel
+            }
+        } );
+        tagDisplay.bindEvent( 'newtag', function( event ) {
+            tagStore.add( {
+                name: event.name
+            } );
+        } );
+        
+        return tagDisplay;
+    }
+        
     function createTagDBAdapter() {
         var tagDBAdapter = AFrame.construct( { 
             type: MobileNotes.PersistenceDBAccess,
@@ -227,18 +262,7 @@ $( function() {
         
         return tagStore;
     }
-    
-    function createTagDisplay() {
-        var tagDisplay = AFrame.construct( {
-            type: MobileNotes.TagDisplay,
-            config: {
-                target: '#noteTags',
-                store: tagStore
-            }
-        } );
-        
-        return tagDisplay;
-    }
+
     function createTagList() {
         var noteList = AFrame.construct( {
             type: AFrame.List,
@@ -290,18 +314,28 @@ $( function() {
 		return field;
 	}
     
- 	function editNote( dataContainer, newNote ) {
-        currNoteCID = dataContainer.cid;
+ 	function editNote( noteCID, newNote ) {
+        var dataContainer = noteStore.get( noteCID );
+        currNoteCID = noteCID;
         
-		editNoteForm.setDataSource( dataContainer );
+        dataContainer.forEach( function( val, key ) {
+            noteEditModel.set( key, val );
+        } );
+        
 		editNoteForm.show( {
 			focus: !!newNote,
 			disableDelete: !!newNote
 		} );
-            
-        noteExtraInfoDisplay.setDataSource( dataContainer );
-        
 	};
+    
+    function saveNote() {
+        var dataContainer = noteStore.get( currNoteCID );
+        dataContainer.forEach( function( val, key ) {
+            dataContainer.set( key, noteEditModel.get( key ) );
+        } );
+
+        noteStore.save( currNoteCID );
+    }
    
 } );
 

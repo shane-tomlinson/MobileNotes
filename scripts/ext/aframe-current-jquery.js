@@ -2182,7 +2182,6 @@ AFrame.List = ( function() {
             /**
             * Triggered whenever a row is inserted into the list
             * @event onInsert
-            * @param {element} rowElement - the row's list element
             * @param {object} options - information about the insert
             * @param {element} options.rowElement - row's element
             * @param {object} options.data - data that was inserted
@@ -4270,6 +4269,10 @@ AFrame.Schema = (function() {
                     callback.call( context, schemaRow, key );
                 }
             }
+        },
+        
+        rowHasMany: function( rowName ) {
+            return !!( this.schema[ rowName ] && this.schema[ rowName ].has_many );
         },
         
         /**
