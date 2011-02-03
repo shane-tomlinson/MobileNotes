@@ -19,7 +19,8 @@ $( function() {
 	var noteList = createNoteList();
 
 
-    // noteEditModel holds the data for the note currently being edited.
+    // noteEditModel holds the data for the note currently being edited.  It is shared across
+    //  the noteEditDisplay
     var noteEditModel = createNoteEditModel();
     
     // Create an adapter, store, and list for the tags.
@@ -36,7 +37,7 @@ $( function() {
 	
     // this is the form that actually edits the notes.  It takes a reference
     //  to both the extra info and delete confirmation displays.
-	var editNoteForm = createNoteEditForm();
+	var noteEditForm = createNoteEditForm();
 	
 	var loading = true;
     // When a new note is inserted, bind some events to it to put it into edit mode.
@@ -58,7 +59,7 @@ $( function() {
 		}
 	} );
 	
-    // finally, load the note store.
+    // finally, load the stores.
 	noteStore.load( { page: 0 } );
     tagStore.load();
 
@@ -184,27 +185,27 @@ $( function() {
     }
     
     function createNoteEditForm() {
-        var editNoteForm = AFrame.construct( {
+        var noteEditForm = AFrame.construct( {
             type: MobileNotes.NoteEditDisplay,
             config: {
-                target: '#editNoteForm',
+                target: '#noteEditForm',
                 dataSource: noteEditModel
             }
         } );
         // when the note edit form says to save, save to the store.
-        editNoteForm.bindEvent( 'onSave', saveNote );
+        noteEditForm.bindEvent( 'onSave', saveNote );
         
         // we are keeping track of whether the current note is a new note or not.  If it is,
         //  and the user hits cancel, delete the note from the store, it was only temporary.
         var newNote;
-        editNoteForm.bindEvent( 'onCancel', function() {
+        noteEditForm.bindEvent( 'onCancel', function() {
             if( newNote ) {
                 noteStore.del( currNoteCID );			
             }
         } );
         
         
-       return editNoteForm;
+       return noteEditForm;
     }
 
     
@@ -319,10 +320,16 @@ $( function() {
         currNoteCID = noteCID;
         
         dataContainer.forEach( function( val, key ) {
+            // we have to do this so that we aren't passing the original array reference.  Otherwise
+            //  we pass the original array reference and update that.  Bad jiji.
+            if( AFrame.array( val ) ) {
+                val = $.extend( [], val );
+            }
+                
             noteEditModel.set( key, val );
         } );
         
-		editNoteForm.show( {
+		noteEditForm.show( {
 			focus: !!newNote,
 			disableDelete: !!newNote
 		} );

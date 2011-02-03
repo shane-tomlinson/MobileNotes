@@ -43,8 +43,7 @@
 
 </head>
 
-<body>
-	<div id="canvas">
+<body class="ui-mobile-viewport">
 		<div id="main" data-role="page" data-theme="b">
 			<header data-role="header" data-nobackbtn="true">
 				<h1>MobileNotes</h1>
@@ -57,13 +56,13 @@
 				<div data-role="navbar">
 					<ul>
 						<li><a href="#appAbout" data-icon="gear">About</a></li>
-						<li><a href="#editNoteForm" id="btnAddNote" data-icon="plus">Add Note</a></li>
+						<li><a href="#noteEditForm" id="btnAddNote" data-icon="plus">Add Note</a></li>
 					</ul>
 				</div>
 			</footer>
 		</div>
 
-		<div id="editNoteForm" data-role="page" data-theme="b">
+		<div id="noteEditForm" data-role="page" data-theme="b">
 			<header data-role="header" data-nobackbtn="true">
 				<a href="#deleteNoteConfirm" class="btnDeleteNote ui-btn-right" data-icon="delete">Delete</a>
 				<h1>Edit Note</h1>
@@ -90,7 +89,7 @@
 			
 			<div data-role="controlgroup">
 				<a href="#main" class="btnDelete" data-role="button">Delete</a>
-				<a href="#editNoteForm" class="btnCancel" data-role="button">Cancel</a>
+				<a href="#noteEditForm" class="btnCancel" data-role="button">Cancel</a>
 			</div>
 		</div>
 
@@ -124,7 +123,7 @@
 			<div data-role="content">
 				<h3>Tags for <span type="text" data-field="title" data-novalue-text="No title given">Note Title</span></h3>
                 
-				<div data-role="fileldcontain">
+				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
                         <ul id="taglist">
                         </ul>
@@ -135,7 +134,7 @@
                 <input type="text" name="newtagname" id="newtagname" />
                 
                 <a href="#" id="btnNewTag" data-role="button">New Tag</a>
-                <a href="#editNoteForm" data-role="button">Back To Note</a>
+                <a href="#noteEditForm" data-role="button">Back To Note</a>
 		</div>
 		
 		<div id="noteShare" data-role="page">
@@ -218,11 +217,9 @@
 		</div>
 		
 
-	</div>
-	
 <script type="text/html" id="templateNote">
 	<li class="note">
-		<a href="#editNoteForm">
+		<a href="#noteEditForm">
 			<span type="text" data-field="title"></span>
 			<span type="date" class="right" data-field="edit_date"></span>
 		</a>
