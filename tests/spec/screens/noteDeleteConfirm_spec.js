@@ -1,4 +1,4 @@
-describe( "DeleteNoteConfirm spec", function() {
+describe( "NoteDeleteConfirm spec", function() {
 
     var screen;
     var events = {};
@@ -8,13 +8,13 @@ describe( "DeleteNoteConfirm spec", function() {
     
     it( 'is creatable', function() {
         screen = AFrame.construct( {
-            type: MobileNotes.DeleteNoteConfirm,
+            type: MobileNotes.NoteDeleteConfirm,
             config: {
                 target: '#deleteNoteConfirm'
             }
         } );
         
-        expect( screen instanceof MobileNotes.DeleteNoteConfirm ).toBe( true );
+        expect( screen instanceof MobileNotes.NoteDeleteConfirm ).toBe( true );
     } );
     
     it( 'should trigger onCancel when cancel hit', function() {

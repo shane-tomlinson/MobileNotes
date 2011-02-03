@@ -1,4 +1,4 @@
-describe( "EditNoteDisplay spec", function() {
+describe( "NoteEditDisplay spec", function() {
 
     var screen;
     var events = {};
@@ -8,21 +8,18 @@ describe( "EditNoteDisplay spec", function() {
     
     it( 'is creatable', function() {
         screen = AFrame.construct( {
-            type: MobileNotes.EditNoteDisplay,
+            type: MobileNotes.NoteEditDisplay,
             config: {
                 target: '#editNote',
-                extraInfoDisplay: AFrame.construct( { type: AFrame.AObject } )
+                dataSource: AFrame.DataContainer( {} )
             }
         } );
         
-        expect( screen instanceof MobileNotes.EditNoteDisplay ).toBe( true );
+        expect( screen instanceof MobileNotes.NoteEditDisplay ).toBe( true );
     } );
     
     it( 'raises onSave when the btnSaveNote clicked', function() {
         screen.bindEvent( 'onSave', genericHandler );
-        
-        // a data source is expected to be set whenever we click save.
-        screen.setDataSource( {} );
         
         $( '.btnSaveNote' ).trigger( 'click' );
         
