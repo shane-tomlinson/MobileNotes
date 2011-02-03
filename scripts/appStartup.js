@@ -174,7 +174,7 @@ $( function() {
     
     function createNoteExtraInfoDisplay() {
         var noteExtraInfoDisplay = AFrame.construct( {
-            type: MobileNotes.NoteExtraInfoDisplay,
+            type: AFrame.DataForm,
             config: {
                 target: '#noteExtraInfo',
                 dataSource: noteEditModel
