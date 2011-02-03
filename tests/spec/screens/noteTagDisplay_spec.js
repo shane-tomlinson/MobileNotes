@@ -11,6 +11,10 @@ describe( "NoteTagDisplay spec", function() {
     } );
     var list;
     
+    beforeEach( function() {
+        events = {};
+    } );
+    
     it( 'is creatable', function() {
         list = AFrame.construct( {
             type: AFrame.List,
@@ -46,5 +50,15 @@ describe( "NoteTagDisplay spec", function() {
     } );
     
     
+    it( 'sets a tag id when checked on', function() {
+        list.insertElement( $( '<li><input id="checkbox1" type="checkbox" value="some checkbox"/></li>' ) );
 
+        $( '#checkbox1' ).attr( 'checked', 'checked' ).trigger( 'click' );
+        expect( dataContainer.get( 'tag_ids' )[ 0 ] ).toBe( 'checkbox1' );
+    } );
+    
+    it( 'sets a tag id when checked on', function() {
+        $( '#checkbox1' ).removeAttr( 'checked' ).trigger( 'click' );
+        expect( dataContainer.get( 'tag_ids' )[ 0 ] ).toBeUndefined();
+    } );
 } );
