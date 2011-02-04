@@ -1,7 +1,7 @@
 
 $( function() {
 
-    var currNoteCID;
+    var currNoteCID, editAddedNote, loading = true;
     
     // set the default form field factory to use our own homegrown version that 
     // creates date and time fields.
@@ -39,26 +39,6 @@ $( function() {
     //  to both the extra info and delete confirmation displays.
 	var noteEditForm = createNoteEditForm();
 	
-	var loading = true;
-    // When a new note is inserted, bind some events to it to put it into edit mode.
-	noteList.bindEvent( 'onInsert', function( data ) {
-        var noteCID = data.data.getCID();
-		$( 'a', data.rowElement ).click( function( event ) {
-			newNote = false;
-			editNote( this );
-		}.bind( noteCID ) );
-		
-		if( MobileNotes.editAddedNote ) {
-			newNote = true;
-			editNote( noteCID, true );
-			MobileNotes.editAddedNote = false;
-		}
-		
-		if( !loading ) {
-			$( '#notelist' ).listview( 'refresh' );
-		}
-	} );
-	
     // finally, load the stores.
 	noteStore.load( { page: 0 } );
     tagStore.load();
@@ -70,7 +50,7 @@ $( function() {
 	$( '#btnAddNote' ).click( function( event ) {
 		event.preventDefault();
 		
-		MobileNotes.editAddedNote = true;
+		editAddedNote = true;
 		
 		noteStore.add( {
 			title: '',
@@ -153,6 +133,25 @@ $( function() {
                     type: AFrame.ListPluginFormRow
                 }
             ]
+        } );
+
+        // When a new note is inserted, bind some events to it to put it into edit mode.
+        noteList.bindEvent( 'onInsert', function( data ) {
+            var noteCID = data.data.getCID();
+            $( 'a', data.rowElement ).click( function( event ) {
+                newNote = false;
+                editNote( this );
+            }.bind( noteCID ) );
+            
+            if( editAddedNote ) {
+                newNote = true;
+                editNote( noteCID, true );
+                editAddedNote = false;
+            }
+            
+            if( !loading ) {
+                $( '#notelist' ).listview( 'refresh' );
+            }
         } );
         
         return noteList;
