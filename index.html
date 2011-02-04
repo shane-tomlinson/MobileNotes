@@ -7,11 +7,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-	<link rel="stylesheet" type="text/css" href="stylesheets/jquery.mobile-1.0a2.css" />
+	<link rel="stylesheet" type="text/css" href="stylesheets/jquery.mobile-1.0a3.css" />
 	<link rel="stylesheet" type="text/css" href="stylesheets/mobilenotes.css" />
 	
 	<script type="text/javascript" src="scripts/ext/jquery-1.4.4.min.js"></script>
-	<script type="text/javascript" src="scripts/ext/jquery.mobile-1.0a2.js"></script>
+	<script type="text/javascript" src="scripts/ext/jquery.mobile-1.0a3.js"></script>
 	<script type="text/javascript" src="scripts/ext/jquery.tmpl.min.js"></script>
 	
 	<script type="text/javascript" src="scripts/ext/aframe-current-jquery.js"></script>
@@ -45,7 +45,7 @@
 
 <body class="ui-mobile-viewport">
 		<div id="main" data-role="page" data-theme="b">
-			<header data-role="header" data-nobackbtn="true">
+			<header data-role="header" data-backbtn="false">
 				<h1>MobileNotes</h1>
 			</header>
 			
@@ -63,8 +63,8 @@
 		</div>
 
 		<div id="noteEditForm" data-role="page" data-theme="b">
-			<header data-role="header" data-nobackbtn="true">
-				<a href="#noteDeleteConfirm" class="btnDeleteNote ui-btn-right" data-icon="delete">Delete</a>
+			<header data-role="header" data-backbtn="false">
+				<a href="#noteDeleteConfirm" class="btnDeleteNote ui-btn-right" data-icon="delete" data-rel="dialog">Delete</a>
 				<h1>Edit Note</h1>
 			</header>
 			
@@ -74,28 +74,28 @@
 			<footer data-role="footer" data-position="fixed">
 				<div data-role="navbar">
 					<ul>
-						<li><a href="#main" class="btnSaveNote" data-icon="check">Save</a></li>
-						<li><a href="#noteTags" class="btnExtraNoteInfo" data-icon="grid" data-transition="slideup">Tag</a></li>
-						<li><a href="#noteExtraInfo" class="btnExtraNoteInfo" data-icon="info" data-transition="slideup">Tools &amp; Info</a></li>
-						<li><a href="#main" class="btnCancelNote" data-icon="back">Cancel</a></li>
+						<li><a href="#main" class="btnSaveNote" data-icon="check" data-rel="back">Save</a></li>
+						<li><a href="#noteTags" class="btnExtraNoteInfo" data-icon="grid" data-rel="dialog" data-transition="slideup">Tag</a></li>
+						<li><a href="#noteExtraInfo" class="btnExtraNoteInfo" data-icon="info" data-transition="slideup" data-rel="dialog">Tools &amp; Info</a></li>
+						<li><a href="#main" class="btnCancelNote" data-icon="back" data-rel="back">Cancel</a></li>
 					</ul>
 				</div>
 			</footer>
 		</div>
 
-		<div id="noteDeleteConfirm" data-role="page" data-theme="c">
-			<header data-role="header" data-nobackbtn="true">
+		<div id="noteDeleteConfirm" data-role="dialog" data-theme="c">
+			<header data-role="header" data-backbtn="false">
 				<h1>Delete Note???</h1>
 			</header>
 			
 			<div data-role="controlgroup">
-				<a href="#main" class="btnDelete" data-role="button">Delete</a>
-				<a href="#noteEditForm" class="btnCancel" data-role="button">Cancel</a>
+				<a href="#main" class="btnDelete" data-role="button" data-rel="back">Delete</a>
+				<a href="#noteEditForm" class="btnCancel" data-role="button" data-rel="back">Cancel</a>
 			</div>
 		</div>
 
-		<div id="noteExtraInfo" data-role="page" data-theme="b">
-			<header data-role="header" data-nobackbtn="true">
+		<div id="noteExtraInfo" data-role="dialog" data-theme="b">
+			<header data-role="header" data-backbtn="false">
 				<h1 type="text" data-field="title" data-novalue-text="No title given">Note Title</h1>
 			</header>
 			
@@ -111,13 +111,13 @@
 				<label>Synced with Server:</label><span type="date" data-field="sync_date"></span> - <span type="time" data-field="sync_date"></span>
 			</div>
 			
-			<a href="#noteShare" data-role="button">Share</a>
-            <a href="#noteEditForm" data-role="button">Back To Note</a>
+			<!--a href="#noteShare" data-role="button">Share</a-->
+            <a href="#noteEditForm" data-role="button" data-rel="back">Back To Note</a>
 			
 		</div>
 		
-		<div id="noteTags" data-role="page" data-theme="b">
-            <header data-role="header" data-nobackbtn="true">
+		<div id="noteTags" data-role="dialog" data-theme="b">
+            <header data-role="header" data-backbtn="false">
                 <h1>Tag Note</h1>
             </header>
             
@@ -133,12 +133,12 @@
                 <input type="text" name="newtagname" placeholder="Tag Name" id="newtagname" />
                 
                 <a href="#" id="btnNewTag" data-role="button">New Tag</a>
-                <a href="#noteEditForm" data-role="button">Back To Note</a>
+                <a href="#noteEditForm" data-role="button" data-rel="back">Back To Note</a>
             </div>
 		</div>
 		
 		<div id="noteShare" data-role="page">
-			<header data-role="header" data-nobackbtn="true">
+			<header data-role="header" data-backbtn="false">
 				<h1>Share</h1>
 			</header>
 			
@@ -150,14 +150,14 @@
                     </fieldset>
 				</div>
 				
-				<a href="#noteEditForm" data-role="button" data-theme="a">Back To Note</a>
+				<a href="#noteEditForm" data-role="button" data-theme="a" data-rel="back">Back To Note</a>
 			</div>
 			
 		</div>
 
 		
 		<div id="appAbout" data-role="page" data-theme="b">
-			<header data-role="header" data-nobackbtn="true">
+			<header data-role="header" data-backbtn="false">
 				<h1 type="text">About</h1>
 			</header>
 			
@@ -181,7 +181,7 @@
                     Source code for this demo is on <a href="https://github.com/stomlinson/MobileNotes">GitHub</a>.
                     Code for AFrameJS can also be found at <a href="https://github.com/stomlinson/AFrame-JS">GitHub</a>.
                 </p>
-				<a href="#main" data-role="button">Back</a>
+				<a href="#main" data-role="button" data-rel="back">Back</a>
 			</div>
 			
 		
