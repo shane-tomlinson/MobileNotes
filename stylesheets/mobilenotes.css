@@ -19,3 +19,7 @@ input.empty, textarea.empty {
     margin-top: .5em;
     margin-bottom: .5em;
 }
+
+[data-role=page] {
+    bottom: 0;
+}

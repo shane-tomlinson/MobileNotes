@@ -87,11 +87,11 @@
 			<header data-role="header" data-backbtn="false">
 				<h1>Delete Note???</h1>
 			</header>
-			
-			<div data-role="controlgroup">
-				<a href="#main" class="btnDelete" data-role="button" data-rel="back">Delete</a>
-				<a href="#noteEditForm" class="btnCancel" data-role="button" data-rel="back">Cancel</a>
-			</div>
+
+			<div data-role="content">
+                <a href="#main" class="btnDelete" data-role="button" data-rel="back">Delete</a>
+                <a href="#noteEditForm" class="btnCancel" data-role="button" data-rel="back">Cancel</a>
+            </div>
 		</div>
 
 		<div id="noteExtraInfo" data-role="dialog" data-theme="b">
@@ -99,20 +99,22 @@
 				<h1 type="text" data-field="title" data-novalue-text="No title given">Note Title</h1>
 			</header>
 			
-			<div>
-				<label>Date Created:</label><span type="date" data-field="date"></span> - <span type="time" data-field="date"></span>
-			</div>
-			
-			<div>
-				<label>Last Edited:</label><span type="date" data-field="edit_date"></span> - <span type="time" data-field="edit_date"></span>
-			</div>
+            <div data-role="content">
+                <div>
+                    <label>Date Created:</label><span type="date" data-field="date"></span> - <span type="time" data-field="date"></span>
+                </div>
+                
+                <div>
+                    <label>Last Edited:</label><span type="date" data-field="edit_date"></span> - <span type="time" data-field="edit_date"></span>
+                </div>
 
-			<div>
-				<label>Synced with Server:</label><span type="date" data-field="sync_date"></span> - <span type="time" data-field="sync_date"></span>
-			</div>
-			
-			<!--a href="#noteShare" data-role="button">Share</a-->
-            <a href="#noteEditForm" data-role="button" data-rel="back">Back To Note</a>
+                <div>
+                    <label>Synced with Server:</label><span type="date" data-field="sync_date"></span> - <span type="time" data-field="sync_date"></span>
+                </div>
+                
+                <!--a href="#noteShare" data-role="button">Share</a-->
+                <a href="#noteEditForm" data-role="button" data-rel="back">Back To Note</a>
+            </div>
 			
 		</div>
 		
