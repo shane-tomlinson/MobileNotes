@@ -66,10 +66,14 @@ persistence.store.memory.config = function(persistence) {
     persistence.asyncForEach(fns, function(fn, callback) {
         fn(session, tx, callback);
       }, function() {
-        var trackedObjects = this.trackedObjects;
+        var trackedObjects = persistence.trackedObjects;
         for(var id in trackedObjects) {
           if(trackedObjects.hasOwnProperty(id)) {
-            trackedObjects[id]._dirtyProperties = {};
+            if (persistence.objectsToRemove.hasOwnProperty(id)) {
+              delete trackedObjects[id];
+            } else {
+              trackedObjects[id]._dirtyProperties = {};
+            }
           }
         }
         args.callback();
@@ -116,6 +120,10 @@ persistence.store.memory.config = function(persistence) {
     callback();
   };
 
+  /**
+   * Dummy
+   */
+  persistence.close = function() {};
 
   // QueryCollection's list
 
@@ -222,5 +230,6 @@ persistence.store.memory.config = function(persistence) {
 
 try {
   exports.config = persistence.store.memory.config;
+  exports.getSession = function() { return persistence; };
 } catch(e) {}
 

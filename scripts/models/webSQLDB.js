@@ -13,7 +13,13 @@ MobileNotes.WebSQLDB = ( function() {
     AFrame.extend( DB, AFrame.AObject, {
         init: function() {
             if( persistence.store ) {
-                persistence.store.websql.config( persistence, 'mobilenotes2', 'MobileNotes Note Database', 10*1024*1024 );
+                try {
+                    persistence.store.websql.config( persistence, 'mobilenotes2', 'MobileNotes Note Database', 10*1024*1024 );
+                }
+                catch( e ) {
+                    // fallback to in memory
+                    persistence.store.memory.config( persistence );
+                }
             }            
         }
     } );

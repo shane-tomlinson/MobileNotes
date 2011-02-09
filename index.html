@@ -18,6 +18,7 @@
 	<script type="text/javascript" src="scripts/ext/persistence.js"></script>
 	<script type="text/javascript" src="scripts/ext/persistence.store.sql.js"></script>
 	<script type="text/javascript" src="scripts/ext/persistence.store.websql.js"></script>
+	<script type="text/javascript" src="scripts/ext/persistence.store.memory.js"></script>
 
 	<script type="text/javascript" src="scripts/mobilenotes.js"></script>
 	<script type="text/javascript" src="scripts/appStartup.js"></script>
@@ -63,33 +64,33 @@
 		</div>
 
 		<div id="noteEditForm" data-role="page" data-theme="b">
-			<header data-role="header" data-backbtn="false">
-				<a href="#noteDeleteConfirm" class="btnDeleteNote ui-btn-right" data-icon="delete" data-rel="dialog">Delete</a>
-				<h1>Edit Note</h1>
-			</header>
-			
-			<input type="text" data-field="title" placeholder="title" required />
-			<textarea type="text" data-field="contents" placeholder="note contents" required></textarea>
-			
-			<footer data-role="footer" data-position="fixed">
-				<div data-role="navbar">
-					<ul>
-						<li><a href="#main" class="btnSaveNote" data-icon="check" data-rel="back">Save</a></li>
-						<li><a href="#noteTags" class="btnExtraNoteInfo" data-icon="grid" data-rel="dialog" data-transition="slideup">Tag</a></li>
-						<li><a href="#noteExtraInfo" class="btnExtraNoteInfo" data-icon="info" data-transition="slideup" data-rel="dialog">Tools &amp; Info</a></li>
-						<li><a href="#main" class="btnCancelNote" data-icon="back" data-rel="back">Cancel</a></li>
-					</ul>
-				</div>
-			</footer>
+            <header data-role="header" data-backbtn="false">
+                <a href="#noteDeleteConfirm" class="btnDeleteNote ui-btn-right" data-icon="delete" data-rel="dialog">Delete</a>
+                <h1>Edit Note</h1>
+            </header>
+            
+            <input type="text" data-field="title" placeholder="title" required />
+            <textarea type="text" data-field="contents" placeholder="note contents" required></textarea>
+            
+            <footer data-role="footer" data-position="fixed">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#main" class="btnSaveNote" data-icon="check" data-rel="back">Save</a></li>
+                        <li><a href="#noteTags" class="btnExtraNoteInfo" data-icon="grid" data-rel="dialog" data-transition="slideup">Tag</a></li>
+                        <li><a href="#noteExtraInfo" class="btnExtraNoteInfo" data-icon="info" data-transition="slideup" data-rel="dialog">Tools &amp; Info</a></li>
+                        <li><a href="#main" class="btnCancelNote" data-icon="back" data-rel="back">Cancel</a></li>
+                    </ul>
+                </div>
+            </footer>
 		</div>
 
 		<div id="noteDeleteConfirm" data-role="dialog" data-theme="c">
 			<header data-role="header" data-backbtn="false">
 				<h1>Delete Note???</h1>
 			</header>
-
+    
 			<div data-role="content">
-                <a href="#main" class="btnDelete" data-role="button" data-rel="back">Delete</a>
+                <a href="#main" class="btnDelete" data-role="button">Delete</a>
                 <a href="#noteEditForm" class="btnCancel" data-role="button" data-rel="back">Cancel</a>
             </div>
 		</div>

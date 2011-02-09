@@ -1,7 +1,7 @@
 
 $( function() {
 
-    var currNoteCID, editAddedNote, loading = true;
+    var currNoteCID, newNote, editAddedNote, loading = true;
     
     // set the default form field factory to use our own homegrown version that 
     // creates date and time fields.
@@ -140,7 +140,7 @@ $( function() {
             var noteCID = data.data.getCID();
             $( 'a', data.rowElement ).click( function( event ) {
                 newNote = false;
-                editNote( this );
+                editNote( '' + this );
             }.bind( noteCID ) );
             
             if( editAddedNote ) {
@@ -196,7 +196,6 @@ $( function() {
         
         // we are keeping track of whether the current note is a new note or not.  If it is,
         //  and the user hits cancel, delete the note from the store, it was only temporary.
-        var newNote;
         noteEditForm.bindEvent( 'onCancel', function() {
             if( newNote ) {
                 noteStore.del( currNoteCID );			
@@ -326,8 +325,14 @@ $( function() {
             if( AFrame.array( val ) ) {
                 val = $.extend( [], val );
             }
-                
-            noteEditModel.set( key, val );
+            else if( AFrame.string( val ) ) {
+                val = '' + val;
+            }
+          /*  else if( 'object' == typeof( val ) ) {
+                val = $.extend( {}, val );
+            }
+            */
+            noteEditModel.set( key, val, true );
         } );
         
 		noteEditForm.show( {
