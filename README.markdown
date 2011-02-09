@@ -2,8 +2,9 @@ MobileNotes
 ===========
 
 This is a proof of concept using [AFrameJS](http://www.aframejs.com) to show how it can be used.  The idea is for devices that
-support WebSQL, use that as an offline storage mechanism so that notes can be stored locally.
+support WebSQL or localStorage, use that as an offline storage mechanism so that notes can be stored locally.
 
+MobileNotes makes use of the fantastic [persistenceJS library](https://github.com/zefhemel/persistencejs) from Zef Hemel.
 
 
 MobileNotes is released under the Creative Commons Attribution-ShareAlike 3.0 License.
