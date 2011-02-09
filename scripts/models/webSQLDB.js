@@ -17,10 +17,30 @@ MobileNotes.WebSQLDB = ( function() {
                     persistence.store.websql.config( persistence, 'mobilenotes2', 'MobileNotes Note Database', 10*1024*1024 );
                 }
                 catch( e ) {
+                    this.inMemory = true;
+                    
                     // fallback to in memory
-                    persistence.store.memory.config( persistence );
+                    persistence.store.memory.config( persistence, 'mobilenotes2' );
                 }
             }            
+        },
+        
+        load: function() {
+            if( this.inMemory && !this.loaded ) {
+                this.loaded = true;
+                try {
+                    persistence.loadFromLocalStorage();
+                    $( window ).bind( 'beforeunload', this.save.bind( this ) );
+                } catch ( e ) {
+                    // old IE will die here
+                }
+            }
+        },
+        
+        save: function() {
+            if( this.inMemory ) {
+                persistence.saveToLocalStorage();
+            }
         }
     } );
     

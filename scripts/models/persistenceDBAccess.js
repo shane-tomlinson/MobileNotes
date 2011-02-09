@@ -15,7 +15,7 @@ MobileNotes.PersistenceDBAccess = ( function() {
             this.schema = AFrame.Schema( config.schema );
             this.tableName = config.tableName;
             
-            MobileNotes.WebSQLDB.getInstance();
+            this.DB = MobileNotes.WebSQLDB.getInstance();
             var DBTaskConfig = {};
             
             this.schema.forEach( function( row, key ) {
@@ -31,6 +31,8 @@ MobileNotes.PersistenceDBAccess = ( function() {
         },
         
         load: function( options ) {
+            this.DB.load();
+            
             var allitems = this.DBTask.all();
             var returnedItems = [];
             
