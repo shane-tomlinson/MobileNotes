@@ -60,39 +60,36 @@ $( function() {
 		} );
 	} );
 
-
+/*
+    function createMainController() {
+        var controller = AFrame.create( MobileNotes.MainController, {
+            target: $( window )
+        } );
+        return controller;
+    }
+  */  
     function createNoteDBAdapter() {
-        var noteDBAdapter = AFrame.construct( { 
-            type: MobileNotes.PersistenceDBAccess,
-            config: {
+        var noteDBAdapter = AFrame.create( MobileNotes.PersistenceDBAccess, {
                 schema: MobileNotes.NoteSchemaConfig,
                 tableName: 'Note'
-            }
-            
         } );
         
         return noteDBAdapter;
     }
     
     function createNoteStore() {
-        var noteStore = AFrame.construct( {
-            type: AFrame.CollectionArray,
-            plugins: [
-                {
-                    type: AFrame.CollectionPluginPersistence,
-                    config: {
+        var noteStore = AFrame.create( AFrame.CollectionArray, {
+            plugins: [ [ AFrame.CollectionPluginPersistence, {
                         loadCallback: noteDBAdapter.load.bind( noteDBAdapter ),
                         addCallback: noteDBAdapter.add.bind( noteDBAdapter ),
                         saveCallback: noteDBAdapter.save.bind( noteDBAdapter ),
                         deleteCallback: noteDBAdapter.del.bind( noteDBAdapter ),
                     }
-                },
-                {
-                    type: AFrame.CollectionPluginModel,
-                    config: {
+                ],
+                [ AFrame.CollectionPluginModel, {
                         schema: MobileNotes.NoteSchemaConfig
                     }
-                }
+                ]
             ]
         } );
         
@@ -100,39 +97,32 @@ $( function() {
     }
 
     function createNoteEditModel() {
-        var model = AFrame.construct( {
-            type: AFrame.Model,
-            config: {
-                schema: MobileNotes.NoteSchemaConfig,
-                data: {}
-            }
+        var model = AFrame.create( AFrame.Model, {
+            schema: MobileNotes.NoteSchemaConfig,
+            data: {}
         } );
         
         return model;
     }
     
     function createNoteList() {
-        var noteList = AFrame.construct( {
-            type: AFrame.List,
-            config: {
+        var noteList = AFrame.create( AFrame.List, {
                 target: '#notelist',
                 listElementFactory: function( data, index ) {
-                    return $( $( '#templateNote' ).html() );
-                }
-            },
-            plugins: [
-                {   // this binds the list to the note store.  Whenever notes are added or deleted
-                    // from the note store, the list is automatically updated.
-                    type: AFrame.ListPluginBindToCollection,
-                    config: {
-                        collection: noteStore
-                    }
+                    return $( '#templateNote' ).tmpl( data.data );
                 },
-                {
-                    // for every note, create a form that is bound to the fields specified in the template.
-                    type: AFrame.ListPluginFormRow
-                }
-            ]
+                plugins: [
+                    [   // this binds the list to the note store.  Whenever notes are added or deleted
+                        // from the note store, the list is automatically updated.
+                        AFrame.ListPluginBindToCollection, {
+                            collection: noteStore
+                        }
+                    ],
+                    [
+                        // for every note, create a form that is bound to the fields specified in the template.
+                        AFrame.ListPluginFormRow
+                    ]
+                ]
         } );
 
         // When a new note is inserted, bind some events to it to put it into edit mode.
@@ -150,7 +140,7 @@ $( function() {
                 }
                 handleClick=true;
             }.bind( noteCID ) );
-            
+       
             $( data.rowElement ).bind( 'swipeleft', function( event ) {
                 handleClick = false;
                 setNoteData( this );
@@ -173,11 +163,8 @@ $( function() {
     }
 
     function createConfirmDisplay() {
-        var deleteConfirmDisplay = AFrame.construct( {
-            type: MobileNotes.NoteDeleteConfirm,
-            config: {
-                target: '#noteDeleteConfirm'
-            }
+        var deleteConfirmDisplay = AFrame.create( MobileNotes.NoteDeleteConfirm, {
+            target: '#noteDeleteConfirm'
         } );
          // when the delete form says delete, delete from the store.
         deleteConfirmDisplay.bindEvent( 'onDelete', function() {
@@ -188,23 +175,17 @@ $( function() {
     }
     
     function createNoteExtraInfoDisplay() {
-        var noteExtraInfoDisplay = AFrame.construct( {
-            type: AFrame.DataForm,
-            config: {
-                target: '#noteExtraInfo',
-                dataSource: noteEditModel
-            }
+        var noteExtraInfoDisplay = AFrame.create( AFrame.DataForm, {
+            target: '#noteExtraInfo',
+            dataSource: noteEditModel
         } );
         return noteExtraInfoDisplay;
     }
     
     function createNoteEditForm() {
-        var noteEditForm = AFrame.construct( {
-            type: MobileNotes.NoteEditDisplay,
-            config: {
-                target: '#noteEditForm',
-                dataSource: noteEditModel
-            }
+        var noteEditForm = AFrame.create( MobileNotes.NoteEditDisplay, {
+            target: '#noteEditForm',
+            dataSource: noteEditModel
         } );
         // when the note edit form says to save, save to the store.
         noteEditForm.bindEvent( 'onSave', saveNote );
@@ -223,13 +204,10 @@ $( function() {
 
     
     function createNoteTagDisplay() {
-        var tagDisplay = AFrame.construct( {
-            type: MobileNotes.NoteTagDisplay,
-            config: {
-                target: '#noteTags',
-                list: tagList,
-                dataSource: noteEditModel
-            }
+        var tagDisplay = AFrame.create( MobileNotes.NoteTagDisplay, {
+            target: '#noteTags',
+            list: tagList,
+            dataSource: noteEditModel
         } );
         tagDisplay.bindEvent( 'newtag', function( event ) {
             tagStore.add( {
@@ -241,36 +219,28 @@ $( function() {
     }
         
     function createTagDBAdapter() {
-        var tagDBAdapter = AFrame.construct( { 
-            type: MobileNotes.PersistenceDBAccess,
-            config: {
-                schema: MobileNotes.TagSchemaConfig,
-                tableName: 'Tag'
-            }
-            
+        var tagDBAdapter = AFrame.create( MobileNotes.PersistenceDBAccess, { 
+            schema: MobileNotes.TagSchemaConfig,
+            tableName: 'Tag'
         } );
         return tagDBAdapter;
     }
 
     function createTagStore() {
-        var tagStore = AFrame.construct( {
-            type: AFrame.CollectionArray,
+        var tagStore = AFrame.create( AFrame.CollectionArray, {
             plugins: [
-                {
-                    type: AFrame.CollectionPluginPersistence,
-                    config: {
+                [
+                    AFrame.CollectionPluginPersistence, {
                         loadCallback: tagDBAdapter.load.bind( tagDBAdapter ),
                         addCallback: tagDBAdapter.add.bind( tagDBAdapter ),
                         saveCallback: tagDBAdapter.save.bind( tagDBAdapter ),
                         deleteCallback: tagDBAdapter.del.bind( tagDBAdapter ),
                     }
-                },
-                {
-                    type: AFrame.CollectionPluginModel,
-                    config: {
+                ],
+                [ AFrame.CollectionPluginModel, {
                         schema: MobileNotes.TagSchemaConfig
                     }
-                }
+                ]
             ]
         } );
         
@@ -278,29 +248,25 @@ $( function() {
     }
 
     function createTagList() {
-        var noteList = AFrame.construct( {
-            type: AFrame.List,
-            config: {
+        var noteList = AFrame.create( AFrame.List, {
                 target: '#taglist',
                 listElementFactory: function( data, index ) {
                     var el = $.tmpl( $( '#templateTag' ).html(), data.getDataObject() );
                     return el;
-                }
-            },
-            plugins: [
-                {   // this binds the list to the note store.  Whenever notes are added or deleted
-                    // from the note store, the list is automatically updated.
-                    type: AFrame.ListPluginBindToCollection,
-                    config: {
-                        collection: tagStore
-                    }
-                }/*,
-                {
-                    // for every note, create a form that is bound to the fields specified in the template.
-                    type: AFrame.ListPluginFormRow
-                }
-                */
-            ]
+                },
+                plugins: [
+                    [   // this binds the list to the note store.  Whenever notes are added or deleted
+                        // from the note store, the list is automatically updated.
+                        AFrame.ListPluginBindToCollection, {
+                            collection: tagStore
+                        }
+                    ]/*,
+                    [
+                        // for every note, create a form that is bound to the fields specified in the template.
+                        AFrame.ListPluginFormRow
+                    ]
+                    */
+                ]
         } );
         
         return noteList;
@@ -320,11 +286,8 @@ $( function() {
         
         var constructor = constructors[ type ] || constructors[ 'default' ];
         
-        var field = AFrame.construct( {
-            type: constructor,
-            config: {
-                target: element
-            }
+        var field = AFrame.create( constructor, {
+            target: element
         } );
 
 		return field;
@@ -368,6 +331,7 @@ $( function() {
         noteStore.save( currNoteCID );
     }
    
+ 
 } );
 
 function parseISO8601(str) {
