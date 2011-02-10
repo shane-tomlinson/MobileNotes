@@ -7,10 +7,7 @@
 MobileNotes.TimeField = ( function() {
     "use strict";
     
-    var Field = function() {
-        Field.sc.constructor.call( this );
-    };
-    AFrame.extend( Field, AFrame.Field, {
+    var Field = AFrame.Class( AFrame.Field, {
         display: function( val ) {
             if( !val ) {
                 return;

@@ -7,10 +7,7 @@
 MobileNotes.NoteDeleteConfirm = ( function() {
     "use strict";
     
-    var Display = function() {
-        Display.sc.constructor.call( this );
-    };
-    AFrame.extend( Display, AFrame.Display, {
+    var Display = AFrame.Class( AFrame.Display, {
         bindEvents: function() {
             this.bindClick( '.btnDelete', this.onDelete );
             this.bindClick( '.btnCancel', this.onCancel );

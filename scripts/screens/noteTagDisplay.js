@@ -18,10 +18,7 @@
 MobileNotes.NoteTagDisplay = (function() {
     "use strict";
     
-    var Display = function() {
-        Display.sc.constructor.call( this );
-    };
-    AFrame.extend( Display, AFrame.Display, {
+    var Display = AFrame.Class( AFrame.Display, {
         init: function( config ) {
             this.list = config.list;
             this.dataSource = config.dataSource;

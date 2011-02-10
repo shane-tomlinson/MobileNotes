@@ -7,10 +7,7 @@
 MobileNotes.PersistenceDBAccess = ( function() {
     "use strict";
     
-    var PersistenceDBAccess = function() {
-        PersistenceDBAccess.sc.constructor.call( this );
-    };
-    AFrame.extend( PersistenceDBAccess, AFrame.AObject, {
+    var PersistenceDBAccess = AFrame.Class( AFrame.AObject, {
         init: function( config ) {
             this.schema = AFrame.Schema( config.schema );
             this.tableName = config.tableName;

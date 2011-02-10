@@ -7,10 +7,7 @@
 MobileNotes.WebSQLDB = ( function() {
     "use strict";
     
-    var DB = function() {
-        DB.sc.constructor.call( this );
-    };
-    AFrame.extend( DB, AFrame.AObject, {
+    var DB = AFrame.Class( AFrame.AObject, {
         init: function() {
             if( persistence.store ) {
                 try {
