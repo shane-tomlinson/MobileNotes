@@ -41,6 +41,8 @@ MobileNotes.NoteTagDisplay = (function() {
     function onNewTag( event ) {
         event.stopImmediatePropagation();
         
+        this.updateList = true;
+
         var val = $( '#newtagname' ).val();
         
         if( val ) {
@@ -57,6 +59,11 @@ MobileNotes.NoteTagDisplay = (function() {
         this.bindDOMEvent( element, 'click', onRowClick, this );
         
         element.find( 'input' ).checkboxradio( { theme: 'c' } );
+        
+        if( this.updateList ) {
+            this.getTarget().find( '[data-role=controlgroup]' ).controlgroup('refresh');
+            this.updateList = false;
+        }
     }
     
     function onRowClick( event ) {
