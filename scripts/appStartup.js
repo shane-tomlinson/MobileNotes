@@ -138,9 +138,24 @@ $( function() {
         // When a new note is inserted, bind some events to it to put it into edit mode.
         noteList.bindEvent( 'onInsert', function( data ) {
             var noteCID = data.data.getCID();
-            $( 'a', data.rowElement ).click( function( event ) {
-                newNote = false;
-                editNote( '' + this );
+            var handleClick = true;
+            $( 'a', data.rowElement ).bind( 'click', function( event ) {
+                if( handleClick ) {
+                    newNote = false;
+                    editNote( '' + this );
+                }
+                else {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                handleClick=true;
+            }.bind( noteCID ) );
+            
+            $( data.rowElement ).bind( 'swipeleft', function( event ) {
+                handleClick = false;
+                setNoteData( this );
+                $.mobile.changePage( $( '#noteExtraInfo' ) )
+                event.preventDefault();
             }.bind( noteCID ) );
             
             if( editAddedNote ) {
@@ -316,6 +331,14 @@ $( function() {
 	}
     
  	function editNote( noteCID, newNote ) {
+        setNoteData( noteCID );
+		noteEditForm.show( {
+			focus: !!newNote,
+			disableDelete: !!newNote
+		} );
+	}
+    
+    function setNoteData( noteCID ) {
         var dataContainer = noteStore.get( noteCID );
         currNoteCID = noteCID;
         
@@ -334,12 +357,7 @@ $( function() {
             */
             noteEditModel.set( key, val, true );
         } );
-        
-		noteEditForm.show( {
-			focus: !!newNote,
-			disableDelete: !!newNote
-		} );
-	};
+    }
     
     function saveNote() {
         var dataContainer = noteStore.get( currNoteCID );
