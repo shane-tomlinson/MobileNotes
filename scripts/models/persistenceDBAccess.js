@@ -116,13 +116,13 @@ MobileNotes.PersistenceDBAccess = ( function() {
         },
 
         del: function( item, options ) {
-            if( thisDBTask ) {
-            this.DBTask.all().filter( 'id', '=', item.get( 'id' ) ).one( null, 
-                function( itemDBObject ) {
-                    persistence.remove( itemDBObject );
-                    persistence.flush();
-                    options.onComplete();
-                } );
+            if( this.DBTask ) {
+                this.DBTask.all().filter( 'id', '=', item.get( 'id' ) ).one( null, 
+                    function( itemDBObject ) {
+                        persistence.remove( itemDBObject );
+                        persistence.flush();
+                        options.onComplete();
+                    } );
             }
             else {
                 options.onComplete();
