@@ -7,10 +7,7 @@
 MobileNotes.NoteEditDisplay = ( function() {
     "use strict"
     
-    var Display = function() {
-        Display.sc.constructor.call( this );
-    };
-    AFrame.extend( Display, AFrame.DataForm, {
+    var Display = AFrame.Class( AFrame.DataForm, {
         bindEvents: function() {
             this.bindClick( '.btnSaveNote', onSave );
             this.bindClick( '.btnCancelNote', onCancel );
