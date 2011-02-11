@@ -53,20 +53,20 @@ MobileNotes.NoteTagDisplay = (function() {
     function onRowInsert( event ) {
         var element = event.rowElement;
         
-        this.bindDOMEvent( element, 'click', onRowClick, this );
-        
-        element.find( 'input' ).checkboxradio( { theme: 'c' } );
+        $( 'input', element ).checkboxradio( { theme: 'c' } );
         
         if( this.updateList ) {
             this.getTarget().find( '[data-role=controlgroup]' ).controlgroup('refresh');
             this.updateList = false;
         }
+
+        this.bindDOMEvent( $( 'label', element ), 'click', onLabelClick );
     }
     
-    function onRowClick( event ) {
-        var row = $( event.currentTarget ).find( 'input[type=checkbox]' );
-        var tagID = row.attr( 'id' );
-        var checked = !!row.attr( 'checked' );
+    function onLabelClick( event ) {
+        var input = $( event.currentTarget ).siblings( 'input[type=checkbox]' );
+        var tagID = input.attr( 'id' );
+        var checked = !!input.attr( 'checked' );
         
         var tagIDs = this.dataSource.get( 'tag_ids' ) || [];
 
