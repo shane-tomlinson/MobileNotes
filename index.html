@@ -26,6 +26,7 @@
 
 	<script type="text/javascript" src="scripts/mobilenotes.js"></script>
 	<script type="text/javascript" src="scripts/appStartup.js"></script>
+	<script type="text/javascript" src="scripts/mainController.js"></script>
 	<script type="text/javascript" src="scripts/models/webSQLDB.js"></script>
 	<script type="text/javascript" src="scripts/models/persistenceDBAccess.js"></script>
 	<script type="text/javascript" src="scripts/models/noteSchema.js"></script>
@@ -222,7 +223,7 @@
 
 <script type="text/html" id="templateNote">
 	<li class="note">
-		<a href="#noteEditForm">
+		<a href="#noteEditForm&id=${id}" data-shared="true">
 			<span type="text" data-field="title"></span>
 			<span type="date" class="right" data-field="edit_date"></span>
 		</a>

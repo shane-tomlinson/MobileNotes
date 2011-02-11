@@ -7,13 +7,14 @@ $( function() {
     // creates date and time fields.
     AFrame.Form.setDefaultFieldFactory( formFieldFactory );
 
+    var mainController = createMainController();
+    
     // We are first creating a DB Adapter - This uses persistence.js
 	var noteDBAdapter = createNoteDBAdapter();
     
     // We are then creating a note store that is tied to the persistence layer.
     var noteStore = createNoteStore();
 	
-    
     // create the note list that is bound to the noteStore.  For every note, create a form row,
     // overriding the default form factory to use our own formFieldFactory.
 	var noteList = createNoteList();
@@ -60,14 +61,14 @@ $( function() {
 		} );
 	} );
 
-/*
+
     function createMainController() {
         var controller = AFrame.create( MobileNotes.MainController, {
             target: $( window )
         } );
         return controller;
     }
-  */  
+
     function createNoteDBAdapter() {
         var noteDBAdapter = AFrame.create( MobileNotes.PersistenceDBAccess, {
                 schema: MobileNotes.NoteSchemaConfig,

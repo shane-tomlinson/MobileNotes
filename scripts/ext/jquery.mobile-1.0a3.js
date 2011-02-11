@@ -2034,6 +2034,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 		//if url is a string
 		if( url ){
 			fileUrl = path.getFilePath(url);
+            fileUrl = fileUrl.split('&')[0];
 			to = $( "[data-url='" + fileUrl + "']" );
 		}
 		else{ //find base url of element, if avail
