@@ -1,7 +1,7 @@
 
 $( function() {
 
-    var currNoteCID, newNote, editAddedNote, loading = true;
+    var currNoteCID, newNote, deleteOnCancel, loading = true;
     
     // set the default form field factory to use our own homegrown version that 
     // creates date and time fields.
@@ -41,8 +41,10 @@ $( function() {
 	var noteEditForm = createNoteEditForm();
 	
     // finally, load the stores.
-	noteStore.load( { page: 0 } );
     tagStore.load();
+	noteStore.load( { page: 0, onComplete: function() { 
+        mainController.initialRouting();
+    } } );
 
     // update the note list.
 	$( '#notelist' ).listview();
@@ -51,13 +53,15 @@ $( function() {
 	$( '#btnAddNote' ).click( function( event ) {
 		event.preventDefault();
 		
-		editAddedNote = true;
-		
 		noteStore.add( {
 			title: '',
 			contents: ''
 		}, {
-			insertAt: 0
+			insertAt: 0,
+            onComplete: function( note ) {
+                newNote = true;
+                location.href = location.href.replace( /#.*/, '' ) + '#noteEditForm&id=' + note.get( 'id' );
+            }
 		} );
 	} );
 
@@ -66,6 +70,18 @@ $( function() {
         var controller = AFrame.create( MobileNotes.MainController, {
             target: $( window )
         } );
+        
+        controller.bindEvent( 'editnote', function( event ) {
+            var noteID = event.id;
+            if( noteID != this.currentNoteID ) {
+                var note = noteStore.getByID( noteID );
+                if( note ) {
+                    this.currentNoteID = noteID;
+                    editNote( note.getCID() );
+                }
+            }
+        } );
+        
         return controller;
     }
 
@@ -93,6 +109,14 @@ $( function() {
                 ]
             ]
         } );
+        
+        noteStore.getByID = function( id ) {
+            var item = this.search( function( item, cid, collection ) {
+                return item.get( 'id' ) === id;
+            } );
+            
+            return item;
+        };
         
         return noteStore;
     }
@@ -129,32 +153,13 @@ $( function() {
         // When a new note is inserted, bind some events to it to put it into edit mode.
         noteList.bindEvent( 'onInsert', function( data ) {
             var noteCID = data.data.getCID();
-            var handleClick = true;
-            $( 'a', data.rowElement ).bind( 'click', function( event ) {
-                if( handleClick ) {
-                    newNote = false;
-                    editNote( '' + this );
-                }
-                else {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                handleClick=true;
-            }.bind( noteCID ) );
-       
+
             $( data.rowElement ).bind( 'swipeleft', function( event ) {
-                handleClick = false;
                 setNoteData( this );
                 $.mobile.changePage( $( '#noteExtraInfo' ) )
                 event.preventDefault();
             }.bind( noteCID ) );
-            
-            if( editAddedNote ) {
-                newNote = true;
-                editNote( noteCID, true );
-                editAddedNote = false;
-            }
-            
+
             if( !loading ) {
                 $( '#notelist' ).listview( 'refresh' );
             }
@@ -194,7 +199,7 @@ $( function() {
         // we are keeping track of whether the current note is a new note or not.  If it is,
         //  and the user hits cancel, delete the note from the store, it was only temporary.
         noteEditForm.bindEvent( 'onCancel', function() {
-            if( newNote ) {
+            if( deleteOnCancel ) {
                 noteStore.del( currNoteCID );			
             }
         } );
@@ -261,12 +266,7 @@ $( function() {
                         AFrame.ListPluginBindToCollection, {
                             collection: tagStore
                         }
-                    ]/*,
-                    [
-                        // for every note, create a form that is bound to the fields specified in the template.
-                        AFrame.ListPluginFormRow
                     ]
-                    */
                 ]
         } );
         
@@ -294,12 +294,15 @@ $( function() {
 		return field;
 	}
     
- 	function editNote( noteCID, newNote ) {
+ 	function editNote( noteCID ) {
         setNoteData( noteCID );
 		noteEditForm.show( {
 			focus: !!newNote,
 			disableDelete: !!newNote
 		} );
+        
+        deleteOnCancel = newNote;
+        newNote = false;
 	}
     
     function setNoteData( noteCID ) {
@@ -315,10 +318,7 @@ $( function() {
             else if( AFrame.string( val ) ) {
                 val = '' + val;
             }
-          /*  else if( 'object' == typeof( val ) ) {
-                val = $.extend( {}, val );
-            }
-            */
+
             noteEditModel.set( key, val, true );
         } );
     }

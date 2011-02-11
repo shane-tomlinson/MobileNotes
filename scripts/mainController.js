@@ -6,7 +6,7 @@ MobileNotes.MainController = ( function() {
             Controller.sc.bindEvents.call( this );
         },
         
-        initialRoute: onHashChange
+        initialRouting: onHashChange
     } );
     
     function onHashChange() {
@@ -21,6 +21,11 @@ MobileNotes.MainController = ( function() {
             var idParts = commands[ 1 ] && commands[ 1 ].split( '=' );
             if( idParts ) {
                 id = idParts[ 1 ];
+                
+                this.triggerEvent( {
+                    type: 'editnote',
+                    id: id
+                } );
             }
         }
     }
