@@ -23,3 +23,7 @@ input.empty, textarea.empty {
 [data-role=page] {
     bottom: 0;
 }
+
+.ui-li .ui-btn-inner {
+    padding: 1.5em 75px 1.5em 15px;
+}

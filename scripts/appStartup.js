@@ -153,12 +153,21 @@ $( function() {
         // When a new note is inserted, bind some events to it to put it into edit mode.
         noteList.bindEvent( 'onInsert', function( data ) {
             var noteCID = data.data.getCID();
-
-            $( data.rowElement ).bind( 'swipeleft', function( event ) {
-                setNoteData( this );
-                $.mobile.changePage( $( '#noteExtraInfo' ) )
+            
+            var swipe = false;
+            this.bindDOMEvent( data.rowElement, 'swipeleft', function( event ) {
                 event.preventDefault();
-            }.bind( noteCID ) );
+
+                swipe = true;
+                setNoteData( this );
+                $.mobile.changePage( $( '#noteExtraInfo' ) );
+            }, noteCID );
+            this.bindDOMEvent( data.rowElement, 'click', function( event ) {
+                if( swipe ) {
+                    event.stopImmediatePropagation();
+                    swipe = false;
+                }
+            } );
 
             if( !loading ) {
                 $( '#notelist' ).listview( 'refresh' );
