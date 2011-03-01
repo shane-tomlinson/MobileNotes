@@ -10,7 +10,7 @@ MobileNotes.NoteEditDisplay = ( function() {
     var Display = AFrame.Class( AFrame.DataForm, {
         bindEvents: function() {
             this.bindClick( '.btnSaveNote', onSave );
-            this.bindClick( '.btnCancelNote', onCancel );
+            this.bindClick( '.btnCancelNote', this.triggerProxy( 'onCancel' ) );
             this.bindDOMEvent( this.getTarget(), 'pageshow', onPageShow );
             
             Display.sc.bindEvents.call( this );
@@ -33,11 +33,6 @@ MobileNotes.NoteEditDisplay = ( function() {
             this.triggerEvent( 'onSave' );
         }
     }
-
-    function onCancel( event ) {
-        this.triggerEvent( 'onCancel' );
-    }
-        
     
     function onPageShow() {
         if( this.focusOnShow ) {

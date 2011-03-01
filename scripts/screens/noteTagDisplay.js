@@ -20,9 +20,8 @@ MobileNotes.NoteTagDisplay = (function() {
     
     var Display = AFrame.Class( AFrame.Display, {
         init: function( config ) {
-            this.list = config.list;
-            this.dataSource = config.dataSource;
-            
+            this.import( config, 'list', 'dataSource' );
+
             Display.sc.init.call( this, config );
         },
         

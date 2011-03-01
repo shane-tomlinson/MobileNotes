@@ -1048,6 +1048,48 @@ AFrame.AObject = (function(){
          */
         removeChild: function( cid ) {
             AFrame.remove( this.children, cid );
+        },
+        
+        /**
+        * Import fields from an object into "this"
+        *
+        *    // import specified fields from an object into "this".
+        *    this.import( { field1: 'field1value', field2: 'field2value' }, 'field1', 'field2' );
+        *
+        *    // import all fields from an object into "this".
+        *    this.import( { field3: 'field3value', field4: 'field4value' } );
+        *
+        * @method import
+        * @param {object} importFrom
+        * @param {string} fieldName (optional) - all parameters after importFrom should be strings.  
+        *   If not given, import all fields
+        */
+        'import': function( importFrom ) {
+            var fieldNames = Array.prototype.slice.call( arguments, 1 );
+            
+            if( fieldNames.length ) {
+                fieldNames.forEach( function( name, index ) {
+                    this[ name ] = importFrom[ name ];
+                }, this );
+            }
+            else {
+                AFrame.mixin( this, importFrom );
+            }
+        },
+        
+        /**
+        * Create a trigger event proxy function.  Useful to re-broadcast an event or when a DOM 
+        *   event should trigger a normal AObject based event.
+        *
+        *    // use triggerProxy to rebroadcast an event from a child
+        *    child.bindEvent( 'eventToProxy', this.triggerProxy( 'eventToProxy' ) );
+        *    
+        *
+        * @method triggerProxy
+        * @param {string} eventName - name of event to trigger
+        */
+        triggerProxy: function( eventName ) {
+            return this.triggerEvent.bind( this, eventName );
         }
     }, AFrame.ObservablesMixin );
 
@@ -3125,9 +3167,7 @@ AFrame.Form = ( function() {
         bindFormElements: function() {
             var formElements = AFrame.DOM.getDescendentElements( '[data-field]', this.getTarget() );
             
-            AFrame.DOM.forEach( formElements, function( formElement, index ) {
-                this.bindFormElement( formElement );
-            }, this );
+            AFrame.DOM.forEach( formElements, this.bindFormElement, this );
         },
 
         teardown: function() {
@@ -4793,8 +4833,8 @@ AFrame.ListPluginFormRow = ( function() {
 *    } );
 *
 *    // Set up the form to look under #nameForm for elements with the "data-field" 
-*    //    attribute.  This will find two fields, each field will be tied to the 
-*    //    appropriate field in the libraryDataContainer
+*    //    attribute.  The name of each field will be that specified in the element's "name"
+*    //    attribute.  This will try and tie fields to name and version, as specified in the schemaConfig.
 *    var form = AFrame.create( AFrame.DataForm, {
 *        target: '#nameForm',
 *        dataSource: model
@@ -4904,7 +4944,7 @@ AFrame.DataForm = ( function() {
     }
 
     function fieldGetName( formField ) {
-        return AFrame.DOM.getAttr( formField.getTarget(), 'data-field' );
+        return AFrame.DOM.getAttr( formField.getTarget(), 'name' );
     }
 
     function fieldSetValue( data ) {
