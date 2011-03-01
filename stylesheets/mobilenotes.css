@@ -25,20 +25,42 @@ input.empty, textarea.empty {
 }
 
 .ui-li .ui-btn-inner {
-    padding: 1.5em 75px 1.5em 15px;
+    padding: 1em 75px 1em 15px;
+}
+
+.note [name=title] {
+    vertical-align: middle;
+    line-height: 50px;
+    display: inline-block;
 }
 
 .note .noteDate {
     width: 50px;
     border: 1px solid #ccc;
     text-align: center;
+    float: left;
+    margin-right: 1em;
+}
+
+.note .noteTime {
     float: right;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 50px;
 }
 
 .monthName {
     background: red;
+    background: -moz-linear-gradient(center top, #b80034 0%, #f50014 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #b80034), color-stop(1, #f50014));
     color: #fff;
     text-transform: uppercase;
     text-shadow: none;
     font-weight: bold;
+    padding: .15em 0;
+}
+
+.day {
+    background: #fff;
+    padding: .15em 0;
 }

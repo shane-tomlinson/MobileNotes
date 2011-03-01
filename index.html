@@ -225,11 +225,13 @@
 <script type="text/html" id="templateNote">
 	<li class="note">
 		<a href="#noteEditForm&id=${id}" data-shared="true">
-			<span type="text" data-field name="title"></span>
-			<div class="noteDate">
+            <div type="time" class="noteTime" data-field data-time-format="12" name="edit_date"></div>
+            
+    		<div class="noteDate">
                 <div type="date" class="monthName" data-field name="edit_date" data-format="MMM"></div>
-                <div type="date" data-field name="edit_date" data-format="dd"></div>
+                <div type="date" class="day" data-field name="edit_date" data-format="dd"></div>
             </div>
+			<span type="text" data-field name="title"></span>
 		</a>
 	</li>
 </script>
