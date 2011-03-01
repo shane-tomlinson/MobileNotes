@@ -7,21 +7,14 @@
 MobileNotes.DateField = ( function() {
     "use strict";
     
-    var monthNamesShort = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    
     var Field = AFrame.Class( AFrame.Field, {
         display: function( val ) {
             if( !val ) {
                 return;
             }
             
-            var monthName = monthNamesShort[ val.getMonth() ];
-            var date = val.getDate();
-            var year = val.getFullYear();
-
-            var dateString = monthName + ' ' + date + ', ' + year;
+            var format = this.getTarget().attr( 'data-format' ) || 'MMM d, yyyy';
+            var dateString = val.toString( format );
             
             Field.sc.display.call( this, dateString );
         }

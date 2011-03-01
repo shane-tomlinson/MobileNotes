@@ -15,7 +15,7 @@ input.empty, textarea.empty {
     margin: 0 auto;
 }
 
-.min-width-480px input[data-field=title] {
+.min-width-480px input[name=title] {
     margin-top: .5em;
     margin-bottom: .5em;
 }
@@ -26,4 +26,19 @@ input.empty, textarea.empty {
 
 .ui-li .ui-btn-inner {
     padding: 1.5em 75px 1.5em 15px;
+}
+
+.note .noteDate {
+    width: 50px;
+    border: 1px solid #ccc;
+    text-align: center;
+    float: right;
+}
+
+.monthName {
+    background: red;
+    color: #fff;
+    text-transform: uppercase;
+    text-shadow: none;
+    font-weight: bold;
 }

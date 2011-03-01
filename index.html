@@ -23,6 +23,7 @@
 	<script type="text/javascript" src="scripts/ext/persistence.store.sql.js"></script>
 	<script type="text/javascript" src="scripts/ext/persistence.store.websql.js"></script>
 	<script type="text/javascript" src="scripts/ext/persistence.store.memory.js"></script>
+	<script type="text/javascript" src="scripts/ext/date.js"></script>
 
 	<script type="text/javascript" src="scripts/mobilenotes.js"></script>
 	<script type="text/javascript" src="scripts/appStartup.js"></script>
@@ -74,8 +75,8 @@
                 <h1>Edit Note</h1>
             </header>
             
-            <input type="text" data-field="title" placeholder="title" required />
-            <textarea type="text" data-field="contents" placeholder="note contents" required></textarea>
+            <input type="text" data-field name="title" placeholder="title" required />
+            <textarea type="text" data-field name="contents" placeholder="note contents" required></textarea>
             
             <footer data-role="footer" data-position="fixed">
                 <div data-role="navbar">
@@ -102,20 +103,20 @@
 
 		<div id="noteExtraInfo" data-role="dialog" data-theme="b">
 			<header data-role="header" data-backbtn="false">
-				<h1 type="text" data-field="title" data-novalue-text="No title given">Note Title</h1>
+				<h1 type="text" data-field name="title" data-novalue-text="No title given">Note Title</h1>
 			</header>
 			
             <div data-role="content">
                 <div>
-                    <label>Date Created:</label><span type="date" data-field="date"></span> - <span type="time" data-field="date"></span>
+                    <label>Date Created:</label><span type="date" data-field name="date"></span> - <span type="time" data-field name="date"></span>
                 </div>
                 
                 <div>
-                    <label>Last Edited:</label><span type="date" data-field="edit_date"></span> - <span type="time" data-field="edit_date"></span>
+                    <label>Last Edited:</label><span type="date" data-field name="edit_date"></span> - <span type="time" data-field name="edit_date"></span>
                 </div>
 
                 <div>
-                    <label>Synced with Server:</label><span type="date" data-field="sync_date">Never</span>
+                    <label>Synced with Server:</label><span type="date" data-field name="sync_date">Never</span>
                 </div>
                 
                 <!--a href="#noteShare" data-role="button">Share</a-->
@@ -130,7 +131,7 @@
             </header>
             
 			<div data-role="content">
-				<h3>Tags for <span type="text" data-field="title" data-novalue-text="No title given">Note Title</span></h3>
+				<h3>Tags for <span type="text" data-field name="title" data-novalue-text="No title given">Note Title</span></h3>
                 
 				<div data-role="fieldcontain">
 					<fieldset id="taglist" data-role="controlgroup">
@@ -224,8 +225,11 @@
 <script type="text/html" id="templateNote">
 	<li class="note">
 		<a href="#noteEditForm&id=${id}" data-shared="true">
-			<span type="text" data-field="title"></span>
-			<span type="date" class="right" data-field="edit_date"></span>
+			<span type="text" data-field name="title"></span>
+			<div class="noteDate">
+                <div type="date" class="monthName" data-field name="edit_date" data-format="MMM"></div>
+                <div type="date" data-field name="edit_date" data-format="dd"></div>
+            </div>
 		</a>
 	</li>
 </script>
@@ -233,7 +237,7 @@
 <script type="text/html" id="">
     <div class="ui-checkbox">
         <input type="checkbox" id="${id}" name="${id}" />
-        <label data-field="name" for="${id}" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-bottom ui-controlgroup-last ui-btn-up-c">
+        <label data-field name="name" for="${id}" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-bottom ui-controlgroup-last ui-btn-up-c">
             <span class="ui-btn-inner ui-corner-bottom ui-controlgroup-last">
                 <span class="ui-btn-text">${name}</span>
                 <span class="ui-icon ui-icon-ui-icon-checkbox-off ui-icon-checkbox-off"></span>
